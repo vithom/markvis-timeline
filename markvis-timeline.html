@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Markvis-timeline v0.1</title>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap-reboot.min.css" integrity="sha512-HJaQ4y3YcUGCWikWDn8bFeGTy3Z/3IbxFYQ9G3UAWx16PyTL6Nu5P/BDDV9s0WhK3Sq27Wtbk/6IcwGmGSMXYg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+
+
+    <!-- Milligram CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css" integrity="sha512-xiunq9hpKsIcz42zt0o2vCo34xV0j6Ny8hgEylN3XBglZDtTZ2nwnqF/Z/TTCc18sGdvCjbFInNd++6q3J0N6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+    <!-- Spectre -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css"> -->
+
+    <style type="text/css">
+        /*:root {
+            --primary-subtle: #cfe2ff;
+
+            --secondary-subtle: #e2e3e5;
+            --success-subtle: #d1e7dd;
+            --info-subtle: #cff4fc;
+            --info-subtle-transp: #cff4fc55;
+            --warning-subtle: #fff3cd;
+            --danger-subtle: #f8d7da;
+            --dark-subtle: #ced4da;
+
+            --tertiary: #000000;
+        }*/
+
+        #source {font-family: consolas, monospace;}
+
+/*        #config {display: flex; width: 40%; justify-content: space-around; margin: 8px 0}*/
+/*        #config > section > div {margin: 8px 0; }*/
+
+/*        #timeline { max-height: 1000px; }*/
+
+/*        .vis-inner {width: inherit;}*/
+        
+        .vis-item.vis-range.primary { background-color: var(--bs-primary-bg-subtle); }
+        
+        .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
+        
+        .vis-item.tertiary { background-color: var(--bs-tertiary); }
+        
+        .vis-item.vis-range.success { background-color: var(--bs-success-bg-subtle); border-color: var(--bs-success); }
+        
+        .vis-item.warning { background-color: var(--bs-warning-bg-subtle); }
+        .vis-item.vis-dot.warning { border-color: var(--bs-warning); }
+        
+        .vis-item.danger { background-color: var(--bs-danger); }
+        
+        .vis-item.vis-box.info { background-color: var(--bs-info); }
+        .vis-item.vis-point.info {color: var(--bs-info) }
+        .vis-item.vis-dot.info { border-color: var(--bs-info); }
+        
+        .vis-item.even {background-color: #d5f6f366;}
+        .vis-item.odd {background-color: #e3f6d566;}
+        .vis-item.off {background-color: #0000; background-image: repeating-linear-gradient(-45deg,#ffffff00 0 20px,#ff000015 0 40px)}
+        .vis-item.notime {background-color: #f4f6d5; border-color: #f8da97}
+        
+        /* alternating column backgrounds */
+        .vis-time-axis .vis-grid.vis-odd { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm bg-body-tertiary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Markvis Timeline</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav me-auto">
+                    <button class="btn btn-outline-secondary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer">Edit timeline</button>
+                    <button class="btn btn-outline-success me-1" type="button" id="btn-export">Export</button>
+                </div>
+                <div class="navbar-nav">
+                    <button class="btn btn-outline-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#configDrawer">Configuration</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section>
+    <div id="timeline"></div>
+    </section>
+
+    <div class="offcanvas offcanvas-start" id="drawer" style="width: 600px;">
+        <div class="offcanvas-header">
+            <h2>Timeline content</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <!-- style="width:100%" -->
+            <div class="d-flex justify-content-between mb-2">
+                <input type="file" id="inputFile" value="test.md">
+                <button type="button" class="btn btn-outline-secondary disabled" id="btn-import">Import</button>
+                <button type="button" class="btn btn-outline-primary w-50" id="btn-update">Update</button>
+            </div>
+            <textarea id="source" class="flex-fill" placeholder="Enter markdown here"></textarea>
+            
+            <div id="source-config">
+                <button id='btn-config-wrap' class="btn active btn-sm" data-bs-toggle="button" aria-pressed="true">autowrap</button>
+                <div class="btn-group dropup">
+                    <button id='btn-config-group' class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">New group</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" id="el-config-group"># first level group</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-group2">## Second level group</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-group3">### Third level group</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group dropup">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Items</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" id="el-config-item-point">. point item</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-box">! box item</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-range">] range item</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-background">= background item</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-recursive">¤ recursive items</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div contenteditable="true">test</div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" id="configDrawer" data-bs-backdrop="false">
+        <div class="offcanvas-header">
+            <h3>Configuration</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="card">
+                <div class="card-header">Scale configuration</div>
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5> -->
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="scale" class="form-check-input" value="auto" checked />
+                            Auto
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="scale" class="form-check-input" value="week" />
+                            Weeks
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="scale" class="form-check-input" value="day" />
+                            Days
+                        </label>
+                    </div>
+
+                    <p>
+                        <input type="checkbox" id="weekscale" name="weekscale" checked />
+                        <label for="weekscale">showWeekScale</label>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Zoom configuration</div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="zoom" class="form-check-input" value="default" checked />
+                            Default (2 weeks)
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="zoom" class="form-check-input" value="pi" />
+                            PI (10 weeks)
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="zoom" class="form-check-input" value="semester" />
+                            Semester (6 month)
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="zoom" class="form-check-input" value="year" />
+                            Year (12 month)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">&nbsp</div>
+                <div class="card-body">
+                    <!-- <button id='btn_export'>Test export</button> -->
+                    <button id='btn_restore'>Restore all items visibility</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+         const markvis = {
+            utils:  {
+                splitLine: function(line, start = 1) {
+                    console.log("helpers:", "splitLine() called")
+                    return line.substr(start).trim().split(";")
+                }
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        //TODO:
+        //
+        // + button to add an item in a category + input window
+        
+        // + display with the week number
+        // + To have a custom function (format in the options) to manage display of timeline scale
+
+        const $ = (sel) => document.querySelector(sel) // jQuery emulation
+
+        let newItems = new vis.DataSet();
+        let newGroups = new vis.DataSet();
+
+        // Possible symbols
+        // # ~ & { } [ ] | - ` _ \ ^ @ ( ) = + $ £ ¤ * µ % § ! / : ; . , ? < >
+
+        const charGroup = '#'
+        const charSubGroup = '##'
+        const charSubSubGroup = '###'
+        const charPointEvent = '.'
+        const charBoxEvent = '!'
+        const charRangeEvent = ']'
+        const charBackgroundEvent = '='
+        const charRecursiveEvent = '¤'
+
+        const charSeparatorColor = "|"
+
+        const charComment = '//'
+
+        const breadcrumb = []
+
+        const utils = {
+            
+        }
+
+        function analyze(line) {
+            // TODO: use regexp ?
+            const re = new RegExp(/\#{1}\s*(.+);\s*(.+)/g)
+
+            const matches = re.exec(line)
+            console.debug(matches)
+
+            if (line.startsWith(charComment)) {
+                console.log("comment found:", line.substr(2))
+                return
+            }
+            else if (line.startsWith(charSubSubGroup)) {
+                createGroup(line.substr(3).trim(), 2)
+            }
+            else if (line.startsWith(charSubGroup)) {
+                createGroup(line.substr(2).trim(), 1)
+            }
+            else if (line.startsWith(charGroup))
+            {
+                createGroup(line.substr(1).trim(), 0)
+            }
+            else if (line.startsWith(charPointEvent))
+            {
+                it = createItem(point, currentGroupId, splitLine(line));
+
+                if (color = line.split(charSeparatorColor)[1]) {
+                    it.className = color
+                }
+
+                newItems.add(it)
+            }
+            else if (line.startsWith(charBoxEvent)) {
+                newItems.add(createItem(box, currentGroupId, markvis.utils.splitLine(line)))
+            }
+            else if (line.startsWith(charBackgroundEvent)) {
+                newItems.add(createBackgroundItem(splitLine(line), currentGroupId))
+            }
+            else if (line.startsWith(charRangeEvent)) {
+                newItems.add(createRangeItem(splitLine(line), currentGroupId))
+            }
+            else if (line.startsWith(charRecursiveEvent)) {
+                parts = line.substr(1).trim().split(';')
+                events = parts[0].split(',')
+                console.log('repeat_rc:',newItems, events, parts[1], parts[2])
+                repeat_rc(newItems, events, parts[1].trim(), parseInt(parts[2]))
+            }
+            else {
+                //TODO: afficher les erreurs
+                // ici lignes non traitées
+                console.error(` Ligne non traitée: ${line}` )
+            }
+        }
+
+        function splitLine(line, start = 1) {
+            return line.substr(start).trim().split(";")
+        }
+
+        function createGroup(line, level) {
+            parts = line.split(';')
+
+            if (parts[1]) {
+                var it = { content: parts[0].trim(), id: parts[1].trim() }
+                console.log('createGroup:', it, parts)
+            } else {
+                var it = { content: line }
+                console.log('createGroup:', it, parts)
+            }
+
+
+            if (level > 0) { it.treeLevel = level }
+            
+            id = newGroups.add(it)
+
+            if (level > 0) {
+                parent = newGroups.get(breadcrumb[level-1])
+
+                if (parent.nestedGroups == undefined) { parent.nestedGroups = [] }
+                parent.nestedGroups.push(id[0])
+            }
+
+            if (level == 0) { breadcrumb.length = 1 } // resets the tab to 1 element and delete all other elements
+            
+            breadcrumb[level] = id[0]
+            currentGroupId = id[0]
+        }
+
+        function createItem(fct, currentGroupId, parts) {
+            return fct(currentGroupId, parts[0], parts[1])
+        }
+
+
+        function createRangeItem(parts, currentGroupId) {
+            return range(currentGroupId, parts[0], parts[1].trim(), parts[2].trim())
+        }
+
+        function createBackgroundItem(parts, currentGroupId) {
+            return background(currentGroupId, parts[0], parts[1].trim(), parts[2].trim())
+        }
+
+        document.getElementById('btn-update').onclick = function() {
+            newGroups.clear()
+            newItems.clear()
+
+            md_content = document.getElementById('source').value
+
+            let currentGroupId = null
+
+
+            for (line of md_content.trim().split("\n")) {
+                if (line.length > 0) {
+                    analyze(line.trim())
+                }
+            }
+            
+            timeline.setGroups(newGroups)
+            console.log(newItems)
+            timeline.setItems(newItems)
+        }
+        
+        $('#btn-import').onclick = function() {
+            const selectedFile = document.getElementById("inputFile").files[0];
+            const r = new FileReader()
+            r.onload = function() {
+                document.getElementById('source').value = this.result
+            }
+            r.readAsText(selectedFile)
+        }
+
+        
+        $('#btn-export').onclick = function() {
+            const selectedFile = document.getElementById("inputFile").files[0];
+            let filename = "export.md"
+            
+            if (selectedFile) {
+                filename = selectedFile.name
+            }
+            
+            const text = document.getElementById('source').value
+            const file = new File([text], filename)
+            const url = URL.createObjectURL(file);
+
+            let link = document.createElement('a');
+            link.href = url
+            link.download = file.name;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        $('#inputFile').addEventListener("change", function(){
+            if (this.files.length == 1) {
+                document.getElementById('btn-import').classList.remove('disabled')
+            } else {
+                document.getElementById('btn-import').classList.add('disabled')
+            }
+        })
+
+        $('#btn-config-wrap').onclick = function () {
+            let isPressed = Boolean(this.getAttribute("aria-pressed") == "true")
+            let textarea = document.getElementById("source")
+
+            if (isPressed) {
+                textarea.setAttribute("wrap", 'soft')
+            } else {
+                textarea.setAttribute("wrap", 'off')
+            }
+        }
+
+        $("#el-config-group").onclick = ()=> insertAtCursorPosition(charGroup+" title")
+        $("#el-config-group2").onclick = ()=> insertAtCursorPosition(charSubGroup+" title")
+        $("#el-config-group3").onclick = ()=> insertAtCursorPosition(charSubSubGroup+" title")
+        $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(charPointEvent+ " title ; date")
+        $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(charBoxEvent+ " title ; date")
+        $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(charRangeEvent+ " title ; date_Start ; date_End")
+        $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(charBackgroundEvent)
+        $("#el-config-item-recursive").onclick = ()=> insertAtCursorPosition(charRecursiveEvent)
+
+        function insertAtCursorPosition(text) {
+            let it = $("#source")
+            const [start, end] = [it.selectionStart, it.selectionEnd]
+            console.log(start, end)
+            it.setRangeText(text, start, end)
+        }
+
+
+    </script>
+
+    <script type="text/javascript">
+        if (localStorage.getItem('timeline')) {
+            console.log(localStorage.getItem('timeline'));
+        } else {
+            console.log('pas de local storage pour la timeline')
+        }
+
+        var dt = function(datetime) {
+            it = datetime ? luxon.DateTime.fromISO(datetime.trim()).toISO() : luxon.DateTime.now().toISO()
+            if (it == null) {
+                it = luxon.DateTime.now().toISO()
+            }
+            return it
+        };
+
+        // ***  functions for the dataset ***
+
+        function point(group, content, start) {
+            return {
+                group: group,
+                content: content,
+                start: dt(start)
+            }
+        }
+
+        function box(group, content, start) {
+            return {
+                group: group,
+                content: content,
+                start: dt(start),
+                type: 'box'
+            }
+        }
+
+        function range(group, content, start, end) {
+            return {
+                group: group,
+                content: content,
+                start: dt(start),
+                end: dt(end),
+                type: 'range'
+            };
+        }
+
+        function background(group, content, start, end) {
+            return {
+                group: group,
+                content: content,
+                start: dt(start),
+                end: dt(end),
+                type: 'background'
+            };
+        }
+
+        // *** functions for items display ***
+
+        function repeat_rc(items, rc_list_name, start_date, duration_weeks) {
+            let start = luxon.DateTime.fromISO(start_date);
+            let end = start.plus({weeks: duration_weeks}).minus({days: 1})
+
+            for (rc of rc_list_name) {
+                //console.log(rc, start, end)
+                items.add(background('rc', rc, start.toISO(), end.toISO()))
+                start = start.plus({weeks: duration_weeks})
+                end = end.plus({weeks: duration_weeks})
+            }
+        }
+
+        function table_block(group, table, date) {
+            return {
+                group: group,
+                content: table_block2("Start of production", table),
+                start: dt(date),
+                type: 'box'
+            }
+        }
+
+        function table_block2(title, table) {
+            let res = `
+            <div class="card lm-1">
+                <div class="card-header py-1">${title}</div>
+                <div class="card-body py-0">
+                    <table class="table table-sm m-0">`;
+            for (item of table) {
+                res += `<tr><th class="text-end">${item[0]} :</th><td class="text-end">${item[1]}</td></tr>`
+            }
+
+            res += `</table></div></div>`
+
+            return res
+        }
+        
+        var container = document.getElementById('timeline');
+
+        var groups = new vis.DataSet([]);
+        
+        //IC 2.42.4.2 // GFX: 2.41.5.3 // PBL: 4.02.017 // TGW 20.10.7 (23REL_D RB5?) // REL_A (22.12.4 ??)
+        var items = new vis.DataSet([]);
+        
+        var options = {
+            //horizontalScroll: true,
+            zoomKey: "ctrlKey",
+            verticalScroll: true,
+            // maxHeight: 750,
+            locale: 'fr',
+            //timeAxis: { scale: 'week' },
+            showWeekScale: true,
+            orientation: 'top',
+            zoomMin: 1000*60*60*24*7, // 1 week in ms
+            zoomMax: 1000*60*60*24*7*52, // 1 years in ms
+            type: 'point',
+            editable: true,
+            //stack: false,
+            stackSubgroups: true,
+            
+            groupEditable: true,
+            xss: {disabled: true},
+
+            groupOrder: function(a,b) {
+                return a.value - b.value;
+            },
+            groupOrderSwap: function (a, b, groups) {
+                var v = a.value;
+                a.value = b.value;
+                b.value = v;
+            },
+
+            groupTemplate: function(group) {
+                let container = document.createElement('div');
+                container.innerHTML = group.content + "&ensp;";
+
+                console.log("showNestd:",group.showNested)
+                
+                /*if (group.showNested == undefined) {
+                    let btn = document.createElement('button')
+
+                    btn.innerHTML = '<i class="bi bi-eye-slash-fill" style="font-size: 1.2rem;"></i>'
+                    btn.className = 'btn btn-outline-secondary'
+                    btn.style = "padding: 5px;"
+                    btn.type = 'button'
+                    btn.addEventListener('click', function() {
+                        console.log(group);
+                        for (subgroup of group.nestedGroups) { console.log(groups.get(subgroup)) }
+
+                        groups.update({id: group.id, visible: false});
+                        //groups.get(group.id).visible = false
+                        //console.log(groups.get(group.id).visible)
+
+                        // try {
+                        //     group.nestedGroups.length > 0 ? console.log('yes') : console.log('no');
+                        // }
+                        // catch(e){}
+                        
+                        for (subgroup of group.nestedGroups) {
+                            console.log(groups.get(subgroup))
+                            //groups.get(subgroup).visible = false;
+                        }
+                        
+                        console.log(group);
+                    });
+
+                    
+                    container.append(btn)
+                }*/
+
+                let btn2 = document.createElement('button')
+                btn2.innerHTML = '<i class="bi bi-crosshair" style="font-size: 1.2rem;"></i>'
+                btn2.className = 'btn btn-outline-secondary'
+                btn2.style = "padding: 5px;"
+                btn2.type = 'button'
+                btn2.addEventListener('click', function() {
+                    //let groups = timeline.groupsData
+                    groups.forEach(function(group_) {
+                        if (group_.id != group.id) groups.update({id: group_.id, visible: false});
+                    })
+                })
+
+                container.append(btn2)
+
+                // return `${group.content}<button type="button" class="btn btn-outline-secondary" style="padding: 0;"><i class="bi bi-eye-slash-fill" style="font-size: 1.2rem;"></i></button>`
+                return container
+                // <button type="button" class="btn btn-outline-secondary btn-sm">
+            },
+        }
+
+        //Code timeline swconfigurator/crisp
+        
+        /*this.visTimelineService.setOptions(this.visTimeline, {
+                        start: V[0].start,
+                        showWeekScale: !0,
+                        stack: this._stack,
+                        template: this.templateFunction.bind(this),
+                        orientation: "top",
+                        height: "100%"
+                    }),*/
+
+        var timeline = new vis.Timeline(container, items, options);
+        timeline.setGroups(groups);
+        timeline.setWindow(Date.now() - 1000*60*60*24, Date.now() + 1000*60*60*24*15);
+
+
+        const matches = document.querySelectorAll("input[name='scale']");
+        for(el of matches) {
+            el.onchange = function() {
+                const val = this.value == "auto" ? {} : {scale: this.value};
+                timeline.setOptions({ timeAxis: val });
+            };
+        }
+
+        for(el of document.querySelectorAll("input[name='zoom']")) {
+            el.onclick = function() {
+                // alert(this.value);
+                const map = {default: {weeks: 2}, pi: {weeks: 10}, semester: {months: 6}, year: {years: 1}}
+                timeline.setWindow(
+                    luxon.DateTime.now().minus({days: 1}).toISO(),
+                    luxon.DateTime.now().plus(map[this.value]).toISO()
+                );
+            };
+        }
+
+        document.getElementById('weekscale').onchange = function() {
+            timeline.setOptions({showWeekScale: this.checked});
+        }
+
+        document.getElementById('btn_restore').onclick = function() {
+            groups.forEach(function(group) {
+                groups.update({id: group.id, visible: true});
+            })
+        }
+
+        function zoomOutToWeekScale() {
+            if (timeline.timeAxis.step.scale == "day") {
+                console.log('zoom again 2');
+                timeline.zoomOut(0.2, {animation:false}, zoomOutToWeekScale);
+            }
+        }
+
+        // timeline.on('rangechange', function(props){
+        //     console.log('rangechange: '+props.items);
+        // });
+        timeline.on('rangechanged', function(props){
+            console.log('rangechanged:', timeline.timeAxis.step.scale);
+            // console.log(props);
+        });
+
+        groups.on('update', function(a, b, c, d){
+            console.log('event:', a, b, c, d)
+        })
+    </script>
+</body>
+</html>
