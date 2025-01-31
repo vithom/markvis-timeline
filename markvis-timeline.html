@@ -31,19 +31,9 @@
     <!-- <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css"> -->
 
     <style type="text/css">
-        /*:root {
-            --primary-subtle: #cfe2ff;
-
-            --secondary-subtle: #e2e3e5;
-            --success-subtle: #d1e7dd;
-            --info-subtle: #cff4fc;
-            --info-subtle-transp: #cff4fc55;
-            --warning-subtle: #fff3cd;
-            --danger-subtle: #f8d7da;
-            --dark-subtle: #ced4da;
-
-            --tertiary: #000000;
-        }*/
+        :root {
+            --color-ratio: 30
+        }
 
         #source {font-family: consolas, monospace;}
 
@@ -53,23 +43,38 @@
 /*        #timeline { max-height: 1000px; }*/
 
 /*        .vis-inner {width: inherit;}*/
+
+        .vis-item.vis-dot.blue { border-color: var(--bs-blue);}
+        .vis-item.vis-dot.indigo { border-color: var(--bs-indigo);}
+        .vis-item.vis-dot.purple { border-color: var(--bs-purple);}
+        .vis-item.vis-dot.pink { border-color: var(--bs-pink);}
+        .vis-item.vis-dot.red { border-color: var(--bs-red);}
+        .vis-item.vis-dot.orange { border-color: var(--bs-orange);}
+        .vis-item.vis-dot.yellow { border-color: var(--bs-yellow);}
+        .vis-item.vis-dot.green { border-color: var(--bs-green);}
+        .vis-item.vis-dot.teal { border-color: var(--bs-teal);}
+        .vis-item.vis-dot.cyan { border-color: var(--bs-cyan);}
+        .vis-item.vis-dot.black { border-color: var(--bs-black);}
+        .vis-item.vis-dot.white { border-color: var(--bs-white);}
+        .vis-item.vis-dot.gray { border-color: var(--bs-gray);}
+        
+        .vis-item.vis-range.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio))); border-color: var(--bs-blue); }
+        .vis-item.vis-range.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio))); border-color: var(--bs-indigo); }
+        .vis-item.vis-range.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio))); border-color: var(--bs-purple); }
+        .vis-item.vis-range.pink { background-color: hsl(from var(--bs-pink) h s calc(l + var(--color-ratio))); border-color: var(--bs-pink); }
+        .vis-item.vis-range.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio))); border-color: var(--bs-red); }
+        .vis-item.vis-range.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio))); border-color: var(--bs-orange); }
+        .vis-item.vis-range.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio))); border-color: var(--bs-yellow); }
+        .vis-item.vis-range.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio))); border-color: var(--bs-green); }
+        .vis-item.vis-range.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio))); border-color: var(--bs-teal); }
+        .vis-item.vis-range.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio))); border-color: var(--bs-cyan); }
+        .vis-item.vis-range.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio))); border-color: var(--bs-black); }
+        .vis-item.vis-range.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio))); border-color: var(--bs-white); }
+        .vis-item.vis-range.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio))); border-color: var(--bs-gray); }
         
         .vis-item.vis-range.primary { background-color: var(--bs-primary-bg-subtle); }
-        
         .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
-        
-        .vis-item.tertiary { background-color: var(--bs-tertiary); }
-        
         .vis-item.vis-range.success { background-color: var(--bs-success-bg-subtle); border-color: var(--bs-success); }
-        
-        .vis-item.warning { background-color: var(--bs-warning-bg-subtle); }
-        .vis-item.vis-dot.warning { border-color: var(--bs-warning); }
-        
-        .vis-item.danger { background-color: var(--bs-danger); }
-        
-        .vis-item.vis-box.info { background-color: var(--bs-info); }
-        .vis-item.vis-point.info {color: var(--bs-info) }
-        .vis-item.vis-dot.info { border-color: var(--bs-info); }
         
         .vis-item.even {background-color: #d5f6f366;}
         .vis-item.odd {background-color: #e3f6d566;}
@@ -293,22 +298,34 @@
             }
             else if (line.startsWith(charPointEvent))
             {
+                color = line.split(charSeparatorColor)[1]
+
+                if (color) { line = line.split(charSeparatorColor)[0] }
+                
                 it = createItem(point, currentGroupId, splitLine(line));
 
-                if (color = line.split(charSeparatorColor)[1]) {
-                    it.className = color
-                }
+                if (color) { it.className = color }
 
                 newItems.add(it)
             }
-            else if (line.startsWith(charBoxEvent)) {
+            else if (line.startsWith(charBoxEvent))
+            {
                 newItems.add(createItem(box, currentGroupId, markvis.utils.splitLine(line)))
             }
-            else if (line.startsWith(charBackgroundEvent)) {
+            else if (line.startsWith(charBackgroundEvent))
+            {
                 newItems.add(createBackgroundItem(splitLine(line), currentGroupId))
             }
-            else if (line.startsWith(charRangeEvent)) {
-                newItems.add(createRangeItem(splitLine(line), currentGroupId))
+            else if (line.startsWith(charRangeEvent))
+            {
+                color = line.split(charSeparatorColor)[1]
+                if (color) { line = line.split(charSeparatorColor)[0] }
+
+                it = createRangeItem(splitLine(line), currentGroupId)
+
+                if (color) { it.className = color }
+
+                newItems.add(it)
             }
             else if (line.startsWith(charRecursiveEvent)) {
                 parts = line.substr(1).trim().split(';')
