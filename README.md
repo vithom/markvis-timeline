@@ -1,11 +1,23 @@
 # markvis
 
-This project comes from the inspiration from [markwhen](https://markwhen.com/) but with the [visjs-timeline](https://visjs.org/) library as a base for rendering the timeline.
+This project comes from the inspiration of [markwhen](https://markwhen.com/) but with the [visjs-timeline](https://visjs.org/) library as a base for rendering the timeline.
+
+## User Interface
+The application is a single web-page, with all the code included in it.
+It looks like this by default
+![Main interface empty](/doc/main_interface_empty.png)
+
+The button [Edit timeline] opens a drawer, on the left side, with a textarea to write the markdown that describes the elements to render on the timeline.
+![Main interface edit timeline](/doc/main_interface_edit.png)
+
+The button Configuration opens another drawer, on the right side, to configure the timeline display.
+![Main interface configuration](/doc/main_interface_config.png)
 
 ## Syntax
 Here are the details for the markdown syntax.
+Be careful that the syntax is still a work in progress and can be changed at anytime.
 
-## Groups
+### Groups
 A new group, is represented by a new separated line in the timeline. The syntax to create a new group is the following
 
 ```
@@ -22,6 +34,16 @@ Point and box type items are created like the following
 // point item
  . item title ; <date> [| color]
 ```
+
+Point items can also be customize with an icon, with the following syntax
+```
+ *<icon> item title ; <date> [|color]
+```
+
+The \<icon> term can be any of 'icon name' from google Material Icons, available [here](https://fonts.google.com/icons?icon.set=Material+Icons)
+
+After clicking on an icon, the right drawer shows the icon name.
+(image)
 
 ```
 // box item
@@ -59,4 +81,6 @@ In short, you can use the two following forms
 <details>
 <summary>History</summary>
 v0.1 first usable version
+
+v0.2 Add support for icons and colors
 </details>
