@@ -35,21 +35,36 @@ Groups can be nested with several ```#``` characters
 ```
 
 ### Items
+
 Point and box type items are created like the following
 ```
 // point item
  . item title ; <date> [| color]
+
+// box item
+ ! item title ; <date> [| color]
 ```
 
-Point items can also be customize with an icon, with the following syntax
+#### Icons
+Items can also be customize with an icon, with the two following syntax
 ```
- *<icon> item title ; <date> [|color]
+ [icon] item title ; <date> [|color]
+ {icon} item title; <date> [|color]
 ```
 
-The \<icon> term can be any of 'icon name' from google Material Icons, available [here](https://fonts.google.com/icons?icon.set=Material+Icons)
+There are two different icons providers: Google material icons and Bootstrap icons.\
+The _icon_ term can be found on each of the icons provider, when you click on a icon.
 
-After clicking on an icon, the right drawer shows the icon name.
+##### Google Material icons
+For google material icons, use the brackets form `[icon]` with one of the name available [here](https://fonts.google.com/icons?icon.set=Material+Icons)
+
+The icon name is written in the drawer, after clicking on the desired icon
 (image)
+
+##### Bootstrap icons
+For Bootstrap icons, use the curly braces form with one of the name available [here](https://icons.getbootstrap.com/)
+
+The icon name is written below the icon on the website.
 
 ```
 // box item
