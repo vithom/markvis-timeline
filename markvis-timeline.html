@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.3</title>
+    <title>Markvis-timeline v0.4</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,6 +37,7 @@
         }
 
         #source {font-family: consolas, monospace;}
+        #jsonPluginInput {font-family: consolas, monospace;}
 
 /*        #config {display: flex; width: 40%; justify-content: space-around; margin: 8px 0}*/
 /*        #config > section > div {margin: 8px 0; }*/
@@ -101,7 +102,8 @@
                     <button class="btn btn-outline-success me-1" type="button" id="btn-export">Export</button>
                 </div>
                 <div class="navbar-nav">
-                    <button class="btn btn-outline-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#configDrawer">Configuration</button>
+                    <button class="btn btn-outline-secondary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerPlugins">Plugins</button>
+                    <button class="btn btn-outline-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerConfig">Configuration</button>
                 </div>
             </div>
         </div>
@@ -150,7 +152,7 @@
         </div>
     </div>
 
-    <div class="offcanvas offcanvas-end" id="configDrawer" data-bs-backdrop="false">
+    <div class="offcanvas offcanvas-end" id="drawerConfig" data-bs-backdrop="false">
         <div class="offcanvas-header">
             <h3>Configuration</h3>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -244,6 +246,59 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-bottom" id="drawerPlugins" data-bs-backdrop="false" style="height: 600px;">
+        <div class="offcanvas-header p-2">
+            <h3>Plugins</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-plugin-json" type="button" aria-controls="tab-plugin-json" aria-selected="true">Json to items</button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-2 border border-top-0 flex-grow-1">
+                <div class="tab-pane active" id="tab-plugin-json">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="mb-2">
+                                <div class="form-text">Group where to add the items</div>
+                                <input type="text" id="inputGroup" class="form-control">
+                            </div>
+                            <div class="mb-2">
+                                <div class="form-text">Json key for items' title</div>
+                                <input type="text" id="inputContent" class="form-control">
+                            </div>
+                            <div class="mb-2">
+                                <div class="form-text">Json key for items' date</div>
+                                <input type="text" id="inputDate" class="form-control">
+                            </div>
+                            <div>
+                                <div class="form-text">Optional regexps to evaluate on the date field (<a href="https://regex101.com/" target="_blank">help</a>)</div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="inputRegexpDate" placeholder="Date/time regexp">
+                                    <span class="input-group-text">T</span>
+                                    <input type="text" class="form-control" id="inputRegexpTime" placeholder="Time specific regexp" aria-label="time specific regexp">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col d-flex flex-column">
+                            <textarea class="form-control flex-grow-1" id="jsonPluginInput" aria-label="With textarea" placeholder="paste json content here..."></textarea>
+                            <div class="invalid-feedback">Please paste valid json content</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-baseline">
+                        <button type="submit" class="btn btn-primary" id="buttonJsonPlugin">Submit</button>
+                        <div class="form-text ms-3" id="pluginJsonResult">The json must be an array of objects with at least the keys for the content and the date</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -800,9 +855,73 @@
             // console.log(props);
         });
 
-        groups.on('update', function(a, b, c, d){
-            console.log('event:', a, b, c, d)
-        })
+        $("#buttonJsonPlugin").onclick = function() {
+            const group = $("#inputGroup").value.trim()
+            const keyContent = $("#inputContent").value.trim()
+            const keyDate = $("#inputDate").value.trim()
+            const regexpDate = $("#inputRegexpDate").value  //no trim as we may want a space at the begining/end of the regexp
+            const regexpTime = $("#inputRegexpTime").value  //no trim as we may want a space at the begining/end of the regexp
+            const jsonContent = $("#jsonPluginInput").value
+            let isError = false
+
+            const jsonOutput = (text => {
+                $("#jsonPluginInput").classList.add("is-invalid")
+                $("#jsonPluginInput~div").innerText = text
+            })
+            
+            const checkEmptyField = ((value, field) => {
+                if (!value) {
+                    $(field).classList.add("is-invalid")
+                    isError = true
+                } else {
+                    $(field).classList.remove("is-invalid")
+                }
+            })
+
+            checkEmptyField(group, "#inputGroup")
+            checkEmptyField(keyContent, "#inputContent")
+            checkEmptyField(keyDate, "#inputDate")
+            checkEmptyField(jsonContent, "#jsonPluginInput")
+
+            if (isError) { return }
+
+            try {
+                var json = JSON.parse(jsonContent)
+            } catch (error) {
+                jsonOutput(error.message)
+                return
+            }
+
+            if (! Array.isArray(json) || (Array.isArray(json) && json.length == 0) ) {
+                jsonOutput("The json must be an array of objects")
+                return
+            }
+            
+            json.forEach(item => {
+                const content = item[keyContent]
+                let date = item[keyDate]
+
+                if (regexpDate) {
+                    const re = new RegExp(regexpDate)
+                    const matches = re.exec(date)
+
+                    if (regexpTime) {
+                        const reTime = new RegExp(regexpTime);
+                        const matchesTime = reTime.exec(date);
+                        
+                        if (matches && matchesTime) {
+                            date = matches?.[1] + 'T' + matchesTime?.[1];
+                        } else {
+                            date = ""
+                        }
+                    } else {
+                        date = matches?.[1] ?? ""
+                    }
+                }
+
+                if (content) { newItems.add({group: group, content: content, start: dt(date)}) }
+            })
+        }
     </script>
 </body>
 </html>

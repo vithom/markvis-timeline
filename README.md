@@ -22,6 +22,8 @@ A new group, is represented by a new separated line in the timeline. The syntax 
 
 ```
 # group title
+// you can add a group with a specific id you provide
+# group title ; group_id_you_choose
 ```
 
 Groups can be nested with several ```#``` characters
@@ -98,11 +100,36 @@ Subgroups syntax use the rounded brackets like in the following example
 ```
 Avoid mixing items in subgroup and not in subgroup within a group as it leads to display bugs.
 
+## plugins
+
+### Json plugin
+
+The json plugin allows to create items in batch from a json content.
+
+![json plugin image](/doc/plugin_json.png)
+
+You need to fill the different fields in order to have the items generated:
+ * The id of the group where to generate the items. See the groups part of the documentation to see how to specify an id for a group.
+ * The key in the json content which contains the title of the items
+ * The key in the json date which contains the date of the items
+
+If a key doesn't contains exactly the date format needed, you can extract it with regexp,
+ - either for the complete date or date/time by filling the _Date/time regexp_ field only
+ - or by filling the _date/time regexp_ field for the date, **and** the _time specific regexp_ for the time specifically.
+ 
+Note that if you fill both of field, a "T" character is inserted between the date and the time part of the string which represents the date and time to suits the ISO 8601 format. An exemple is provided below:
+
+![json plugin regexp example](/doc/plugin_json_regexp.png)
+
+A link to the website regex101 is also available to test the regular expressions.
+
 ## Version history
 
 <details>
 <summary>History</summary>
-v0.1 first usable version
-
-v0.2 Add support for icons and colors
+ 
+v0.1 first usable version\
+v0.2 Add support for icons and colors\
+v0.3 Add support for subgroups\
+v0.4 Add json plugin
 </details>
