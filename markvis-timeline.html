@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.5</title>
+    <title>Markvis-timeline v0.6</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,7 +22,8 @@
 
     <style type="text/css">
         :root {
-            --color-ratio: 30
+            --color-ratio: 30;
+            --alpha-ratio: 0.5
         }
 
         #source {font-family: consolas, monospace;}
@@ -55,13 +56,26 @@
         .vis-item.vis-range.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio))); border-color: var(--bs-black); }
         .vis-item.vis-range.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio))); border-color: var(--bs-white); }
         .vis-item.vis-range.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio))); border-color: var(--bs-gray); }
+
+        .vis-item.vis-background.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
         
         .vis-item.vis-range.primary { background-color: var(--bs-primary-bg-subtle); }
         .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
         .vis-item.vis-range.success { background-color: var(--bs-success-bg-subtle); border-color: var(--bs-success); }
 
         .vis-dot[class*=icon-md] { border: none; background: transparent; top: 5px !important; transform: translateX(-12px) !important;}
-        .vis-dot[class*=icon-bs] { border: none; background: transparent; top: 5px !important; transform: translateX(-8px) !important;}*/
+        .vis-dot[class*=icon-bs] { border: none; background: transparent; top: 5px !important; transform: translateX(-8px) !important;}
         
         .vis-item.even {background-color: #d5f6f366;}
         .vis-item.odd {background-color: #e3f6d566;}
@@ -93,7 +107,7 @@
     </nav>
 
     <section>
-    <div id="timeline"></div>
+        <div id="timeline"></div>
     </section>
 
     <div class="offcanvas offcanvas-start" id="drawer" style="width: 600px;">
@@ -101,14 +115,16 @@
             <h2>Timeline content</h2>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body d-flex flex-column">
+        <div class="offcanvas-body d-flex flex-column pt-0">
             <!-- style="width:100%" -->
-            <div class="d-flex justify-content-between mb-2">
-                <input type="file" id="inputFile" value="test.md">
-                <button type="button" class="btn btn-outline-secondary disabled" id="btn-import">Import</button>
-                <button type="button" class="btn btn-outline-primary w-50" id="btn-update">Update</button>
+            <div class="d-flex mb-1">
+                <input type="file" class="form-control form-control-sm" id="inputFile">
+                <button type="button" class="btn btn-outline-secondary btn-sm disabled ms-1" id="btn-import">Import</button>
             </div>
-            <textarea id="source" class="flex-fill" placeholder="Enter markdown here"></textarea>
+            <div class="d-flex justify-content-center mb-1">
+                <button type="button" class="btn btn-sm btn-outline-primary w-50" id="btn-update">Update the timeline</button>
+            </div>
+            <textarea id="source" class="flex-fill mb-1" placeholder="Enter syntax here"></textarea>
             
             <div id="source-config">
                 <button id='btn-config-wrap' class="btn active btn-sm" data-bs-toggle="button" aria-pressed="true">autowrap</button>
@@ -124,8 +140,8 @@
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Items</button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#" id="el-config-item-point">. point item</a></li>
-                        <li><a class="dropdown-item" href="#" id="el-config-item-icon">* iconed item (google material icon)</a></li>
-                        <li><a class="dropdown-item" href="#" id="el-config-item-icon2">{icon} iconed item (Bootstrap icon)</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-icon">*icon item with icon (google material icons)</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-icon2">{icon} item with icon (Bootstrap icons)</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-box">! box item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-range">] range item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-background">= background item</a></li>
@@ -140,7 +156,8 @@
                     </ul>
                 </div>
             </div>
-            <div contenteditable="true">test</div>
+            <!-- TODO: investigate further -->
+            <!-- <div contenteditable="true">test</div> -->
         </div>
     </div>
 
@@ -150,7 +167,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-header">Scale configuration</div>
                 <div class="card-body">
                     <!-- <h5 class="card-title">Special title treatment</h5> -->
@@ -182,7 +199,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-header">Zoom configuration</div>
                 <div class="card-body">
                     <div class="form-check">
@@ -215,7 +232,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-header">Groups configuration</div>
                 <div class="card-body">
                     <div class="form-check form-switch">
@@ -230,11 +247,11 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">&nbsp</div>
+            <div class="card mb-2">
+                <div class="card-header">timeline layout</div>
                 <div class="card-body">
                     <!-- <button id='btn_export'>Test export</button> -->
-                    <button id='btn_restore'>Restore all items visibility</button>
+                    <button class="form-control" id='btn_restore'>Restore all groups visibility</button>
                 </div>
             </div>
 
@@ -295,12 +312,67 @@
     </div>
 
     <script type="text/javascript">
-         const markvis = {
-            utils:  {
-                splitLine: function(line, start = 1) {
-                    console.log("helpers:", "splitLine() called")
-                    return line.substr(start).trim().split(";")
-                }
+        
+        class Markvis {
+            constructor() {
+                this.groups = new vis.DataSet([]);
+                this.items = new vis.DataSet([]);
+                
+                this.options = {
+                    //horizontalScroll: true,
+                    // maxHeight: 750,
+                    //timeAxis: { scale: 'week' },
+                    zoomKey: "ctrlKey",
+                    verticalScroll: true,
+                    locale: 'en',
+                    showWeekScale: true,
+                    orientation: 'top',
+                    zoomMin: 1000*60*60*24*7, // 1 week in ms
+                    zoomMax: 1000*60*60*24*7*52*5, // 5 years in ms
+                    type: 'point',
+                    //editable: true,
+                    groupEditable: true,
+                    xss: {disabled: true},
+
+                    groupOrder: function(a,b) {
+                        return a.value - b.value;
+                    },
+                    
+                    groupOrderSwap: function (a, b, groups) {
+                        // console.log("groupOrderSwap called:", a, b, groups)
+                        let v = a.value;
+                        a.value = b.value;
+                        b.value = v;
+                    },
+                    
+                    groupTemplate: function(group) {
+                        let container = document.createElement('div');
+                        //container.className = "d-flex"
+                        
+                        let content = document.createElement('span');
+                        //content.className = "flex-fill"
+                        content.innerHTML = group.content+" ";
+                        
+                        let btn2 = document.createElement('button')
+                        btn2.innerHTML = '<i class="bi bi-arrows-collapse" style="font-size: 1.2rem;"></i>'
+                        btn2.className = 'btn btn-outline-secondary p-0'
+                        btn2.type = 'button'
+                        btn2.addEventListener('click', function() {
+                            let groups = newGroups
+                            
+                            groups.forEach(function(group_) {
+                                if (group_.id != group.id) groups.update({id: group_.id, visible: false});
+                            })
+                        })
+                        
+                        container.append(content)
+                        container.append(btn2)
+
+                        return container
+                    },
+                };
+
+                //this.timeline = new vis.Timeline()
             }
         }
     </script>
@@ -308,10 +380,11 @@
     <script type="text/javascript">
         //TODO:
         //
-        // + button to add an item in a category + input window
-        
-        // + display with the week number
         // + To have a custom function (format in the options) to manage display of timeline scale
+        // Roadmap:
+        // + Add relative date (+1d, +1w, +1m, +1y)
+        // + Add a plugin to link with github gist
+        // + Add a plugin to link with google drive ???
 
         const $ = (sel) => document.querySelector(sel) // jQuery emulation
 
@@ -339,6 +412,8 @@
         const breadcrumb = []
 
         let currentSubgroupId = null
+
+        value = 0
 
         function analyze(line) {
             // TODO: use regexp ?
@@ -416,7 +491,7 @@
             }
             else if (line.startsWith(charIconBootstrap[0]))
             {
-                const re = new RegExp(/{(\w+)} ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
+                const re = new RegExp(/{([\w-]+)} ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
                 const matches = re.exec(line)
 
                 if (matches) {
@@ -444,7 +519,14 @@
             }
             else if (line.startsWith(charBackgroundEvent))
             {
-                newItems.add(createBackgroundItem(splitLine(line), currentGroupId))
+                color = line.split(charSeparatorColor)[1]
+                if (color) {  line = line.split(charSeparatorColor)[0] }
+
+                it = createBackgroundItem(splitLine(line), currentGroupId)
+
+                if (color) { it.className = color }
+
+                newItems.add(it)
             }
             else if (line.startsWith(charRangeEvent))
             {
@@ -486,6 +568,7 @@
             } else {
                 var it = { content: line }
             }
+            it.value = value++
             console.log('createGroup:', it, parts)
 
             if (level > 0) { it.treeLevel = level }
@@ -605,16 +688,16 @@
             }
         }
 
-        $("#el-config-group").onclick = ()=> insertAtCursorPosition(charGroup+" title")
-        $("#el-config-group2").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+" title")
-        $("#el-config-group3").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+charGroup+" title")
-        $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(charPointEvent+ " title ; date")
-        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(charIconGoogle+ " title ; date")
-        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(charIconBootstrap+ " title ; date")
+        $("#el-config-group").onclick = ()=> insertAtCursorPosition(charGroup+" title\n")
+        $("#el-config-group2").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+" title\n")
+        $("#el-config-group3").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+charGroup+" title\n")
+        $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(charPointEvent+ " title ; date\n")
+        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(charIconGoogle+ "star title ; date\n")
+        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(charIconBootstrap[0]+"star"+charIconBootstrap[1] + " title ; date\n")
 
-        $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(charBoxEvent+ " title ; date")
-        $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(charRangeEvent+ " title ; date_Start ; date_End")
-        $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(charBackgroundEvent)
+        $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(charBoxEvent+ " title ; date\n")
+        $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(charRangeEvent+ " title ; date_Start ; date_End\n")
+        $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(charBackgroundEvent+ " title ; date_Start ; date_End\n")
         $("#el-config-item-recursive").onclick = ()=> insertAtCursorPosition(charRecursiveEvent)
 
         function insertAtCursorPosition(text) {
@@ -628,6 +711,10 @@
     </script>
 
     <script type="text/javascript">
+        //
+        // MAIN SCRIPT
+        //
+        
         if (localStorage.getItem('timeline')) {
             console.log(localStorage.getItem('timeline'));
         } else {
@@ -721,96 +808,6 @@
         
         var container = document.getElementById('timeline');
 
-        var groups = new vis.DataSet([]);
-        
-        var items = new vis.DataSet([]);
-        
-        var options = {
-            //horizontalScroll: true,
-            zoomKey: "ctrlKey",
-            verticalScroll: true,
-            // maxHeight: 750,
-            locale: 'en',
-            //timeAxis: { scale: 'week' },
-            showWeekScale: true,
-            orientation: 'top',
-            zoomMin: 1000*60*60*24*7, // 1 week in ms
-            zoomMax: 1000*60*60*24*7*52, // 1 years in ms
-            type: 'point',
-            //editable: true,
-            //stack: false,
-            //stackSubgroups: true,
-            
-            groupEditable: true,
-            xss: {disabled: true},
-
-            groupOrder: function(a,b) {
-                return a.value - b.value;
-            },
-            groupOrderSwap: function (a, b, groups) {
-                var v = a.value;
-                a.value = b.value;
-                b.value = v;
-            },
-
-            groupTemplate: function(group) {
-                let container = document.createElement('div');
-                container.innerHTML = group.content + "&ensp;";
-
-                console.log("showNestd:",group.showNested)
-                
-                /*if (group.showNested == undefined) {
-                    let btn = document.createElement('button')
-
-                    btn.innerHTML = '<i class="bi bi-eye-slash-fill" style="font-size: 1.2rem;"></i>'
-                    btn.className = 'btn btn-outline-secondary'
-                    btn.style = "padding: 5px;"
-                    btn.type = 'button'
-                    btn.addEventListener('click', function() {
-                        console.log(group);
-                        for (subgroup of group.nestedGroups) { console.log(groups.get(subgroup)) }
-
-                        groups.update({id: group.id, visible: false});
-                        //groups.get(group.id).visible = false
-                        //console.log(groups.get(group.id).visible)
-
-                        // try {
-                        //     group.nestedGroups.length > 0 ? console.log('yes') : console.log('no');
-                        // }
-                        // catch(e){}
-                        
-                        for (subgroup of group.nestedGroups) {
-                            console.log(groups.get(subgroup))
-                            //groups.get(subgroup).visible = false;
-                        }
-                        
-                        console.log(group);
-                    });
-
-                    
-                    container.append(btn)
-                }*/
-
-                let btn2 = document.createElement('button')
-                btn2.innerHTML = '<i class="bi bi-crosshair" style="font-size: 1.2rem;"></i>'
-                btn2.className = 'btn btn-outline-secondary'
-                btn2.style = "padding: 5px;"
-                btn2.type = 'button'
-                btn2.addEventListener('click', function() {
-                    //let groups = timeline.groupsData
-                    groups.forEach(function(group_) {
-                        if (group_.id != group.id) groups.update({id: group_.id, visible: false});
-                    })
-                })
-
-                container.append(btn2)
-
-                // return `${group.content}<button type="button" class="btn btn-outline-secondary" style="padding: 0;"><i class="bi bi-eye-slash-fill" style="font-size: 1.2rem;"></i></button>`
-                return container
-                // <button type="button" class="btn btn-outline-secondary btn-sm">
-            },
-        }
-
         //Code timeline swconfigurator/crisp
         
         /*this.visTimelineService.setOptions(this.visTimeline, {
@@ -822,7 +819,10 @@
                         height: "100%"
                     }),*/
 
-        var timeline = new vis.Timeline(container, items, groups, options);
+        const mks = new Markvis();
+
+        // TODO: integrate in Markvis class
+        var timeline = new vis.Timeline(container, mks.items, mks.groups, mks.options);
 
         timeline.setWindow(Date.now() - 1000*60*60*24, Date.now() + 1000*60*60*24*15);
 
@@ -850,6 +850,8 @@
         }
 
         document.getElementById('btn_restore').onclick = function() {
+            let groups = newGroups
+            
             groups.forEach(function(group) {
                 groups.update({id: group.id, visible: true});
             })

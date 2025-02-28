@@ -144,7 +144,8 @@ A link to the website regex101 is also available to test the regular expressions
 <summary>History</summary>
  
 v0.1 first usable version\
-v0.2 Add support for icons and colors\
-v0.3 Add support for subgroups\
-v0.4 Add json plugin
+v0.2 add support for icons and colors\
+v0.3 add support for subgroups\
+v0.4 add json plugin\
+v0.5 add bootstrap icons provider
 </details>
