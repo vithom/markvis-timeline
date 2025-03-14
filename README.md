@@ -7,11 +7,19 @@ The application is a single web-page, with all the code included in it.
 It looks like this by default
 ![Main interface empty](/doc/main_interface_empty.png)
 
-The button [Edit timeline] opens a drawer, on the left side, with a textarea to write the markdown that describes the elements to render on the timeline.
+### Edition drawer
+The button <kbd>Edit timeline</kbd> opens a drawer, on the left side, with a textarea to write the markdown that describes the elements to render on the timeline.
 ![Main interface edit timeline](/doc/main_interface_edit.png)
 
-The button Configuration opens another drawer, on the right side, to configure the timeline display.
+You can adjust the size of the drawer by holding the <kbd>CTRL</kbd> key and increase/decrase the width with the right or left arrows keys.
+
+### Configuration drawer
+The button <kbd>Configuration</kbd> opens another drawer, on the right side, to configure the timeline display.
 ![Main interface configuration](/doc/main_interface_config.png)
+
+### Plugins drawer
+The button <kbd>Plugins</kbd> opens a bottom drawer and contain a tab list where each tab is a plugin.
+See the plugins section to have more details on each plugin.
 
 ## Syntax
 Here are the details for the markdown syntax.
@@ -26,7 +34,7 @@ A new group, is represented by a new separated line in the timeline. The syntax 
 # group title ; group_id_you_choose
 ```
 
-Groups can be nested with several ```#``` characters
+Groups can be nested with several `#` characters
 
 ```
 ## group title (2nd level)
@@ -148,4 +156,5 @@ v0.2 add support for icons and colors\
 v0.3 add support for subgroups\
 v0.4 add json plugin\
 v0.5 add bootstrap icons provider
+v0.6 fixes and enhancements
 </details>

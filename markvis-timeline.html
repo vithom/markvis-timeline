@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.6</title>
+    <title>Markvis-timeline v0.7</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -315,10 +315,12 @@
         
         class Markvis {
             constructor() {
-                this.groups = new vis.DataSet([]);
-                this.items = new vis.DataSet([]);
+                this.groups = new vis.DataSet()
+                this.items = new vis.DataSet()
                 
                 this.options = {
+                    // start: Date.now() - 1000*60*60*24,
+                    // end: Date.now() + 1000*60*60*24*15,
                     //horizontalScroll: true,
                     // maxHeight: 750,
                     //timeAxis: { scale: 'week' },
@@ -381,10 +383,16 @@
         //TODO:
         //
         // + To have a custom function (format in the options) to manage display of timeline scale
-        // Roadmap:
         // + Add relative date (+1d, +1w, +1m, +1y)
+        // + Add a color to the group line to use that color for all items in the group
+        // + Add a subgroup with none stacked items + syntax
         // + Add a plugin to link with github gist
-        // + Add a plugin to link with google drive ???
+        // + Add a plugin to link with google drive ??? // proposed by @copilot
+        // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
+        // + Internal refactoring for the Markvis class
+        //   ++ integrate the timeline in the class
+        //   ++ use the dataset defined in the class anywhere in the code
+        //   ++ integrate the helpers functions in the class
 
         const $ = (sel) => document.querySelector(sel) // jQuery emulation
 
@@ -413,7 +421,7 @@
 
         let currentSubgroupId = null
 
-        value = 0
+        value = 0 //TODO: to be renamed for a more explicit name for the value of the group
 
         function analyze(line) {
             // TODO: use regexp ?
@@ -618,6 +626,8 @@
             timeline.setGroups(newGroups)
             timeline.setItems(newItems)
 
+            timeline.fit()
+
             // Update for icon here
             // DOM manipulation only available after timeline.setItems()
             const nodes = document.querySelectorAll(".vis-dot.vis-icon")
@@ -782,29 +792,31 @@
             }
         }
 
-        function table_block(group, table, date) {
-            return {
-                group: group,
-                content: table_block2("Start of production", table),
-                start: dt(date),
-                type: 'box'
-            }
-        }
+        // No used by this version
+        //
+        // function table_block(group, table, date) {
+        //     return {
+        //         group: group,
+        //         content: table_block2("Start of production", table),
+        //         start: dt(date),
+        //         type: 'box'
+        //     }
+        // }
 
-        function table_block2(title, table) {
-            let res = `
-            <div class="card lm-1">
-                <div class="card-header py-1">${title}</div>
-                <div class="card-body py-0">
-                    <table class="table table-sm m-0">`;
-            for (item of table) {
-                res += `<tr><th class="text-end">${item[0]} :</th><td class="text-end">${item[1]}</td></tr>`
-            }
+        // function table_block2(title, table) {
+        //     let res = `
+        //     <div class="card lm-1">
+        //         <div class="card-header py-1">${title}</div>
+        //         <div class="card-body py-0">
+        //             <table class="table table-sm m-0">`;
+        //     for (item of table) {
+        //         res += `<tr><th class="text-end">${item[0]} :</th><td class="text-end">${item[1]}</td></tr>`
+        //     }
 
-            res += `</table></div></div>`
+        //     res += `</table></div></div>`
 
-            return res
-        }
+        //     return res
+        // }
         
         var container = document.getElementById('timeline');
 
@@ -823,8 +835,7 @@
 
         // TODO: integrate in Markvis class
         var timeline = new vis.Timeline(container, mks.items, mks.groups, mks.options);
-
-        timeline.setWindow(Date.now() - 1000*60*60*24, Date.now() + 1000*60*60*24*15);
+        
 
         const matches = document.querySelectorAll("input[name='scale']");
         for(el of matches) {
@@ -947,6 +958,27 @@
                 if (content) { newItems.add({group: group, content: content, start: dt(date)}) }
             })
         }
+
+        window.addEventListener("keydown", (event) => {
+            const drawer = $("#drawer")
+            const minWidth = 350
+            const maxWidth = window.innerWidth - 50
+
+            if (drawer.classList.contains("show")) {
+                if (event.key == "ArrowRight" && event.ctrlKey) {
+                    const newWidth = parseInt(drawer.style.width) + 50
+                    if (newWidth < maxWidth) {
+                        drawer.style.width = newWidth + "px"
+                    }
+                }
+                else if (event.key == "ArrowLeft" && event.ctrlKey) {
+                    const newWidth = parseInt(drawer.style.width) - 50
+                    if (newWidth > minWidth) {
+                        drawer.style.width = newWidth + "px"
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
