@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.7</title>
+    <title>Markvis-timeline v0.8</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -129,11 +129,13 @@
             <div id="source-config">
                 <button id='btn-config-wrap' class="btn active btn-sm" data-bs-toggle="button" aria-pressed="true">autowrap</button>
                 <div class="btn-group dropup">
-                    <button id='btn-config-group' class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">New group</button>
+                    <button id='btn-config-group' class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Groups</button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#" id="el-config-group"># first level group</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-group2">## Second level group</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-group3">### Third level group</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-subgroup">Subgroup</a></li>
                     </ul>
                 </div>
                 <div class="btn-group dropup">
@@ -142,6 +144,7 @@
                         <li><a class="dropdown-item" href="#" id="el-config-item-point">. point item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-icon">*icon item with icon (google material icons)</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-icon2">{icon} item with icon (Bootstrap icons)</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-box">! box item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-range">] range item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-background">= background item</a></li>
@@ -229,6 +232,13 @@
                             Year (12 month)
                         </label>
                     </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="zoom" class="form-check-input" value="fit" />
+                            Fit all items
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -314,6 +324,24 @@
     <script type="text/javascript">
         
         class Markvis {
+
+            // Possible symbols
+            // # ~ & { } [ ] | - ` _ \ ^ @ ( ) = + $ £ ¤ * µ % § ! / : ; . , ? < >
+            static SYNTAX =  Object.freeze({
+                CHAR_GROUP: '#',
+                CHAR_SUBGROUP: '(',
+                CHAR_SUBGROUP_END: ')',
+                CHAR_EVENT_POINT: '.',
+                CHAR_EVENT_BOX: '!',
+                CHAR_EVENT_RANGE: ']',
+                CHAR_EVENT_BACKGROUND: '=',
+                CHAR_EVENT_RECURSIVE: '¤',
+                CHAR_ICON_GOOGLE: "*",
+                CHAR_ICON_BOOTSTRAP: "{}",
+                CHAR_SEPARATOR_COLOR: "|",
+                CHAR_COMMENT: '//',
+            })
+
             constructor() {
                 this.groups = new vis.DataSet()
                 this.items = new vis.DataSet()
@@ -360,7 +388,7 @@
                         btn2.className = 'btn btn-outline-secondary p-0'
                         btn2.type = 'button'
                         btn2.addEventListener('click', function() {
-                            let groups = newGroups
+                            let groups = mks.groups
                             
                             groups.forEach(function(group_) {
                                 if (group_.id != group.id) groups.update({id: group_.id, visible: false});
@@ -372,9 +400,108 @@
 
                         return container
                     },
-                };
+                }
+
+                this.breadcrumb = []
+
+                this.currentGroupId = null
+                this.currentSubgroupId = null
+                this.currentSubgroupValue = 0
+                this.currentGroupColor = null
 
                 //this.timeline = new vis.Timeline()
+            }
+
+            clear() {
+                this.groups.clear()
+                this.items.clear()
+                this.breadcrumb.length = 0
+                this.currentGroupId = null
+                this.currentSubgroupId = null
+                this.currentSubgroupValue = 0
+                this.currentGroupColor = null
+            }
+
+            addGroup(line, level) {
+                const re = new RegExp(/([^;|]+)\s*(?:;?([^|]+))?(?:\|?\s*(\w+))?/)
+                const matches = re.exec(line)
+
+                if (matches) {
+                    const content = matches[1].trim()
+                    const id = matches[2] ? matches[2].trim() : null
+                    const color = matches[3] ? matches[3].trim() : null
+
+                    let it = { content: content, value: this.currentSubgroupValue++ }
+                    if (id) { it.id = id }
+                    if (color) { it.className = color }
+
+                    if (level > 0) { it.treeLevel = level }
+
+                    const groupId = this.groups.add(it)
+
+                    if (level > 0) {
+                        const parent = this.groups.get(this.breadcrumb[level-1])
+
+                        if (parent.nestedGroups == undefined) { parent.nestedGroups = [] }
+                        parent.nestedGroups.push(groupId[0])
+                    }
+
+                    if (level == 0) { this.breadcrumb.length = 1 } // resets the tab to 1 element and delete all other elements
+
+                    this.breadcrumb[level] = groupId[0]
+                    this.currentGroupColor = color
+                    
+                    this.currentGroupId = groupId[0]
+                }
+                else {
+                    console.warn("no regexp match for group:", line)
+                }
+            }
+
+            addItem(type, line) {
+                let item =  {}
+
+                let parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
+                
+                let color = parts[1] ? parts[1].trim() : this.currentGroupColor
+                
+                line = parts[0]
+
+                parts = line.split(';')
+                let content = parts[0].trim()
+                let start = parts[1] ? parts[1].trim() : null
+                let end = parts[2] ? parts[2].trim() : null
+                
+                switch (type) {
+                    case "point":
+                        item.type = "point"
+                        break;
+                    
+                    case "box":
+                        item.type = "box"
+                        break;
+                    
+                    case "range":
+                        item.type = "range"
+                        item.end = dt(end)
+                        break;
+                    
+                    case "background":
+                        item.type = "background"
+                        item.end = dt(end)
+                        break;
+                        
+                    default:
+                        break;
+                }
+                 
+                item.content = content
+                item.start = dt(start)
+                if (this.currentGroupId) { item.group = this.currentGroupId }
+                if (color) { item.className = color }
+                if (this.currentSubgroupId) { item.subgroup = this.currentSubgroupId }
+                
+                this.items.add(item)
             }
         }
     </script>
@@ -382,10 +509,18 @@
     <script type="text/javascript">
         //TODO:
         //
+        // + Add configuration for locale
+        // + Add color helper
+        // + Add a syntax for comments on an item (tootip content)
         // + To have a custom function (format in the options) to manage display of timeline scale
+        // + Add a button to fold/unfold all groups
+        // + Tooptip for group button (only display this line) ?
+        // + Add a button to put the line on top ?
+        // + add a syntax to avoid a line to be re-ordered ?
         // + Add relative date (+1d, +1w, +1m, +1y)
         // + Add a color to the group line to use that color for all items in the group
         // + Add a subgroup with none stacked items + syntax
+        // + "Gantt" mode for a group (all lines are stacked in the defined order) + syntax
         // + Add a plugin to link with github gist
         // + Add a plugin to link with google drive ??? // proposed by @copilot
         // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
@@ -396,33 +531,6 @@
 
         const $ = (sel) => document.querySelector(sel) // jQuery emulation
 
-        let newItems = new vis.DataSet();
-        let newGroups = new vis.DataSet();
-
-        // Possible symbols
-        // # ~ & { } [ ] | - ` _ \ ^ @ ( ) = + $ £ ¤ * µ % § ! / : ; . , ? < >
-
-        const charGroup = '#'
-        const charSubGroup = '('
-        const charSubGroupEnd = ')'
-        const charPointEvent = '.'
-        const charBoxEvent = '!'
-        const charRangeEvent = ']'
-        const charBackgroundEvent = '='
-        const charRecursiveEvent = '¤'
-        const charIconGoogle = "*"
-        const charIconBootstrap = "{}"
-
-        const charSeparatorColor = "|"
-
-        const charComment = '//'
-
-        const breadcrumb = []
-
-        let currentSubgroupId = null
-
-        value = 0 //TODO: to be renamed for a more explicit name for the value of the group
-
         function analyze(line) {
             // TODO: use regexp ?
             const re = new RegExp(/\#{1}\s*(.+);\s*(.+)/g)
@@ -430,46 +538,35 @@
             const matches = re.exec(line)
             console.debug(matches)
 
-            if (line.startsWith(charComment)) {
+            if (line.startsWith(Markvis.SYNTAX.CHAR_COMMENT)) {
                 console.log("comment found:", line.substr(2))
                 return
             }
-            else if (line.startsWith(charGroup+charGroup+charGroup)) {
-                createGroup(line.substr(3).trim(), 2)
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP)) {
+                mks.addGroup(line.substr(3).trim(), 2)
             }
-            else if (line.startsWith(charGroup+charGroup)) {
-                createGroup(line.substr(2).trim(), 1)
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP)) {
+                mks.addGroup(line.substr(2).trim(), 1)
             }
-            else if (line.startsWith(charGroup))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_GROUP))
             {
-                createGroup(line.substr(1).trim(), 0)
+                mks.addGroup(line.substr(1).trim(), 0)
             }
-            else if (line.startsWith(charSubGroup))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_SUBGROUP))
             {
-                currentSubgroupId = line.substr(1).trim()
+                mks.currentSubgroupId = line.substr(1).trim()
             }
-            else if (line.startsWith(charSubGroupEnd))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_SUBGROUP_END))
             {
-                newGroups.get(currentGroupId).subgroupStack = true
-                currentSubgroupId = null
+                let currentGroupId = mks.currentGroupId
+                mks.groups.get(currentGroupId).subgroupStack = true
+                mks.currentSubgroupId = null
             }
-            else if (line.startsWith(charPointEvent))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_POINT))
             {
-                color = line.split(charSeparatorColor)[1]
-
-                if (color) { line = line.split(charSeparatorColor)[0] }
-                
-                it = createItem(point, currentGroupId, splitLine(line));
-
-                if (color) { it.className = color }
-
-                if (currentSubgroupId) {
-                    it.subgroup = currentSubgroupId
-                }
-
-                newItems.add(it)
+                mks.addItem("point", line.substr(1).trim())
             }
-            else if (line.startsWith(charIconGoogle))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_GOOGLE))
             {
                 const re = new RegExp(/\*(\w+)? ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
                 const matches = re.exec(line)
@@ -480,6 +577,7 @@
                     const date = matches[4]
                     const color = matches[6]
 
+                    let currentGroupId = mks.currentGroupId
                     let it = createItem(point, currentGroupId, [title,date])
                     
                     if (icon) {
@@ -490,14 +588,14 @@
                         it.className += ' ' + color
                     }
                     
-                    newItems.add(it)
+                    mks.items.add(it)
                 }
                 else {
                     console.warn("no regexp match for", line)
                 }
 
             }
-            else if (line.startsWith(charIconBootstrap[0]))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[0]))
             {
                 const re = new RegExp(/{([\w-]+)} ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
                 const matches = re.exec(line)
@@ -508,6 +606,7 @@
                     const date = matches[4]
                     const color = matches[6]
 
+                    let currentGroupId = mks.currentGroupId
                     let it = createItem(point, currentGroupId, [title, date])
 
                     if (icon) {
@@ -518,82 +617,32 @@
                         it.className += ' ' + color
                     }
                     
-                    newItems.add(it)
+                    mks.items.add(it)
                 }
             }
-            else if (line.startsWith(charBoxEvent))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_BOX))
             {
-                newItems.add(createItem(box, currentGroupId, markvis.utils.splitLine(line)))
+                mks.addItem("box", line.substr(1).trim())
             }
-            else if (line.startsWith(charBackgroundEvent))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_BACKGROUND))
             {
-                color = line.split(charSeparatorColor)[1]
-                if (color) {  line = line.split(charSeparatorColor)[0] }
-
-                it = createBackgroundItem(splitLine(line), currentGroupId)
-
-                if (color) { it.className = color }
-
-                newItems.add(it)
+                mks.addItem("background", line.substr(1).trim())
             }
-            else if (line.startsWith(charRangeEvent))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_RANGE))
             {
-                color = line.split(charSeparatorColor)[1]
-                if (color) { line = line.split(charSeparatorColor)[0] }
-
-                it = createRangeItem(splitLine(line), currentGroupId)
-
-                if (color) { it.className = color }
-
-                if (currentSubgroupId) {
-                    it.subgroup = currentSubgroupId
-                }
-
-                newItems.add(it)
+                mks.addItem("range", line.substr(1).trim())
             }
-            else if (line.startsWith(charRecursiveEvent)) {
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_RECURSIVE)) {
                 parts = line.substr(1).trim().split(';')
                 events = parts[0].split(',')
-                console.log('repeat_rc:',newItems, events, parts[1], parts[2])
-                repeat_rc(newItems, events, parts[1].trim(), parseInt(parts[2]))
+                console.log('repeat_rc:', mks.items, events, parts[1], parts[2])
+                repeat_rc(mks.items, events, parts[1].trim(), parseInt(parts[2]))
             }
             else {
                 //TODO: afficher les erreurs
                 // ici lignes non traitées
                 console.warn('Line not interpreted', line)
             }
-        }
-
-        function splitLine(line, start = 1) {
-            return line.substr(start).trim().split(";")
-        }
-
-        function createGroup(line, level) {
-            parts = line.split(';')
-
-            if (parts[1]) {
-                var it = { content: parts[0].trim(), id: parts[1].trim() }
-            } else {
-                var it = { content: line }
-            }
-            it.value = value++
-            console.log('createGroup:', it, parts)
-
-            if (level > 0) { it.treeLevel = level }
-            
-            id = newGroups.add(it)
-
-            if (level > 0) {
-                parent = newGroups.get(breadcrumb[level-1])
-
-                if (parent.nestedGroups == undefined) { parent.nestedGroups = [] }
-                parent.nestedGroups.push(id[0])
-            }
-
-            if (level == 0) { breadcrumb.length = 1 } // resets the tab to 1 element and delete all other elements
-            
-            breadcrumb[level] = id[0]
-            currentGroupId = id[0]
         }
 
         function createItem(fct, currentGroupId, parts) {
@@ -609,12 +658,11 @@
         }
 
         document.getElementById('btn-update').onclick = function() {
-            newGroups.clear()
-            newItems.clear()
+            mks.clear()
 
             md_content = document.getElementById('source').value
 
-            let currentGroupId = null
+            //let currentGroupId = null
 
 
             for (line of md_content.trim().split("\n")) {
@@ -623,8 +671,8 @@
                 }
             }
             
-            timeline.setGroups(newGroups)
-            timeline.setItems(newItems)
+            timeline.setGroups(mks.groups)
+            timeline.setItems(mks.items)
 
             timeline.fit()
 
@@ -698,17 +746,16 @@
             }
         }
 
-        $("#el-config-group").onclick = ()=> insertAtCursorPosition(charGroup+" title\n")
-        $("#el-config-group2").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+" title\n")
-        $("#el-config-group3").onclick = ()=> insertAtCursorPosition(charGroup+charGroup+charGroup+" title\n")
-        $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(charPointEvent+ " title ; date\n")
-        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(charIconGoogle+ "star title ; date\n")
-        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(charIconBootstrap[0]+"star"+charIconBootstrap[1] + " title ; date\n")
-
-        $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(charBoxEvent+ " title ; date\n")
-        $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(charRangeEvent+ " title ; date_Start ; date_End\n")
-        $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(charBackgroundEvent+ " title ; date_Start ; date_End\n")
-        $("#el-config-item-recursive").onclick = ()=> insertAtCursorPosition(charRecursiveEvent)
+        $("#el-config-group").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_GROUP + " title\n")
+        $("#el-config-group2").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP +" title\n")
+        $("#el-config-group3").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP +" title\n")
+        $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_POINT + " title ; date\n")
+        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICON_GOOGLE + "star title ; date\n")
+        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[0] + "star" + Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[1] + " title ; date\n")
+        $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_BOX + " title ; date\n")
+        $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_RANGE + " title ; date_Start ; date_End\n")
+        $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_BACKGROUND + " title ; date_Start ; date_End\n")
+        $("#el-config-item-recursive").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_RECURSIVE)
 
         function insertAtCursorPosition(text) {
             let it = $("#source")
@@ -836,9 +883,7 @@
         // TODO: integrate in Markvis class
         var timeline = new vis.Timeline(container, mks.items, mks.groups, mks.options);
         
-
-        const matches = document.querySelectorAll("input[name='scale']");
-        for(el of matches) {
+        for(el of document.querySelectorAll("input[name='scale']")) {
             el.onchange = function() {
                 const val = this.value == "auto" ? {} : {scale: this.value};
                 timeline.setOptions({ timeAxis: val });
@@ -847,12 +892,15 @@
 
         for(el of document.querySelectorAll("input[name='zoom']")) {
             el.onclick = function() {
-                // alert(this.value);
-                const map = {default: {weeks: 2}, pi: {weeks: 10}, semester: {months: 6}, year: {years: 1}}
-                timeline.setWindow(
-                    luxon.DateTime.now().minus({days: 1}).toISO(),
-                    luxon.DateTime.now().plus(map[this.value]).toISO()
-                );
+                if (this.value == "fit") {
+                    timeline.fit();
+                } else {
+                    const map = {default: {weeks: 2}, pi: {weeks: 10}, semester: {months: 6}, year: {years: 1}}
+                    timeline.setWindow(
+                        luxon.DateTime.now().minus({days: 1}).toISO(),
+                        luxon.DateTime.now().plus(map[this.value]).toISO()
+                    );
+                }
             };
         }
 
@@ -861,7 +909,7 @@
         }
 
         document.getElementById('btn_restore').onclick = function() {
-            let groups = newGroups
+            let groups = mks.groups
             
             groups.forEach(function(group) {
                 groups.update({id: group.id, visible: true});
@@ -955,7 +1003,7 @@
                     }
                 }
 
-                if (content) { newItems.add({group: group, content: content, start: dt(date)}) }
+                if (content) { mks.items.add({group: group, content: content, start: dt(date)}) }
             })
         }
 

@@ -29,10 +29,12 @@ Be careful that the syntax is still a work in progress and can be changed at any
 A new group, is represented by a new separated line in the timeline. The syntax to create a new group is the following
 
 ```
-# group title
+# group title [|<color>]
 // you can add a group with a specific id you provide
-# group title ; group_id_you_choose
+# group title ; group_id_you_choose [|<color>]
 ```
+
+You can provide a `<color>` name at the end of the line for a group so that all items in this group will get this color.
 
 Groups can be nested with several `#` characters
 
@@ -157,4 +159,6 @@ v0.3 add support for subgroups\
 v0.4 add json plugin\
 v0.5 add bootstrap icons provider
 v0.6 fixes and enhancements
+v0.7 add possibility to resize the content drawer
+v0.8 add possibility to set a color for an entire group
 </details>
