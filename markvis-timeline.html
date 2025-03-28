@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.8</title>
+    <title>Markvis-timeline v0.9</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <!-- <script type="text/javascript" src="https://unpkg.com/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vis-timeline/peer/umd/vis-timeline-graph2d.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vis-timeline/styles/vis-timeline-graph2d.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vis-data@7.1.9/peer/umd/vis-data.min.js"></script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 
@@ -164,80 +169,87 @@
         </div>
     </div>
 
-    <div class="offcanvas offcanvas-end" id="drawerConfig" data-bs-backdrop="false">
+    <div class="offcanvas offcanvas-end" id="drawerConfig" data-bs-backdrop="false" style="width: 500px;">
         <div class="offcanvas-header">
             <h3>Configuration</h3>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <div class="card mb-2">
-                <div class="card-header">Scale configuration</div>
-                <div class="card-body">
-                    <!-- <h5 class="card-title">Special title treatment</h5> -->
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="scale" class="form-check-input" value="auto" checked />
-                            Auto
-                        </label>
+            <div class="d-flex gap-2 mb-2">
+                <div class="card flex-fill">
+                    <div class="card-header">Zoom configuration
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="config-autoclose" checked />
+                            <label class="form-check-label" for="config-autoclose">Auto-close</label>
+                        </div>
                     </div>
-                    
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="scale" class="form-check-input" value="week" />
-                            Weeks
-                        </label>
-                    </div>
-                    
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="scale" class="form-check-input" value="day" />
-                            Days
-                        </label>
-                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="zoom" class="form-check-input" value="default" checked />
+                                Default (2 weeks)
+                            </label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="zoom" class="form-check-input" value="pi" />
+                                PI (10 weeks)
+                            </label>
+                        </div>
 
-                    <p>
-                        <input type="checkbox" id="weekscale" name="weekscale" checked />
-                        <label for="weekscale">showWeekScale</label>
-                    </p>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="zoom" class="form-check-input" value="semester" />
+                                Semester (6 month)
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="zoom" class="form-check-input" value="year" />
+                                Year (12 month)
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="zoom" class="form-check-input" value="fit" />
+                                Fit all items
+                            </label>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="card mb-2">
-                <div class="card-header">Zoom configuration</div>
-                <div class="card-body">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="zoom" class="form-check-input" value="default" checked />
-                            Default (2 weeks)
-                        </label>
-                    </div>
-                    
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="zoom" class="form-check-input" value="pi" />
-                            PI (10 weeks)
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="zoom" class="form-check-input" value="semester" />
-                            Semester (6 month)
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="zoom" class="form-check-input" value="year" />
-                            Year (12 month)
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" name="zoom" class="form-check-input" value="fit" />
-                            Fit all items
-                        </label>
+                <div class="card flex-fill">
+                    <div class="card-header">Scale configuration</div>
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Special title treatment</h5> -->
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="scale" class="form-check-input" value="auto" checked />
+                                Auto
+                            </label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="scale" class="form-check-input" value="week" />
+                                Weeks
+                            </label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" name="scale" class="form-check-input" value="day" />
+                                Days
+                            </label>
+                        </div>
+                        
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="weekscale" checked />
+                            <label class="form-check-label" for="weekscale">showWeekScale</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -262,6 +274,25 @@
                 <div class="card-body">
                     <!-- <button id='btn_export'>Test export</button> -->
                     <button class="form-control" id='btn_restore'>Restore all groups visibility</button>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">Locale</div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="locale" class="form-check-input" value="en" checked />
+                            English (default)
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="locale" class="form-check-input" value="fr" />
+                            French
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -402,6 +433,15 @@
                     },
                 }
 
+                this.configuration = {
+                    zoom: 'default',
+                    scale: 'auto',
+                    stack: true,
+                    stackSubgroups: true,
+                    showWeekScale: true,
+                    autoclose: true,
+                }
+
                 this.breadcrumb = []
 
                 this.currentGroupId = null
@@ -503,30 +543,43 @@
                 
                 this.items.add(item)
             }
+
+            defaultZoom() {
+                $("input[value='default']").click()
+            }
         }
     </script>
 
     <script type="text/javascript">
         //TODO:
         //
-        // + Add configuration for locale
-        // + Add color helper
-        // + Add a syntax for comments on an item (tootip content)
-        // + To have a custom function (format in the options) to manage display of timeline scale
+        // + to check if we can dissociate the locale and the week starting day 
         // + Add a button to fold/unfold all groups
-        // + Tooptip for group button (only display this line) ?
-        // + Add a button to put the line on top ?
+        
+        // Content drawer //
+        // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
+        // + Add color helper
+        // + add possibility to write a HTML color name
+        // + add new icon provider : material design icons + syntax to chose the provider ie. {provider-1-letter/icon}
+        // + group closed by default (syntax ?)
+        // + Add a syntax for comments on an item (tootip content)
         // + add a syntax to avoid a line to be re-ordered ?
         // + Add relative date (+1d, +1w, +1m, +1y)
-        // + Add a color to the group line to use that color for all items in the group
+        
+        // + Tooptip for group button (only display this line) ?
+        // + Add a button to put the line on top ?
+        // + To have a custom function (format in the options) to manage display of timeline scale
+        
         // + Add a subgroup with none stacked items + syntax
         // + "Gantt" mode for a group (all lines are stacked in the defined order) + syntax
+        
+        // Plugins //
         // + Add a plugin to link with github gist
         // + Add a plugin to link with google drive ??? // proposed by @copilot
-        // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
+        
+        
         // + Internal refactoring for the Markvis class
         //   ++ integrate the timeline in the class
-        //   ++ use the dataset defined in the class anywhere in the code
         //   ++ integrate the helpers functions in the class
 
         const $ = (sel) => document.querySelector(sel) // jQuery emulation
@@ -674,7 +727,7 @@
             timeline.setGroups(mks.groups)
             timeline.setItems(mks.items)
 
-            timeline.fit()
+            mks.defaultZoom()
 
             // Update for icon here
             // DOM manipulation only available after timeline.setItems()
@@ -890,6 +943,10 @@
             };
         }
 
+        $("#config-autoclose").onchange = function() {
+            mks.configuration.autoclose = this.checked
+        }
+
         for(el of document.querySelectorAll("input[name='zoom']")) {
             el.onclick = function() {
                 if (this.value == "fit") {
@@ -901,14 +958,19 @@
                         luxon.DateTime.now().plus(map[this.value]).toISO()
                     );
                 }
+                if (mks.configuration.autoclose) {
+                    bootstrap.Offcanvas.getInstance($('#drawerConfig'))?.hide()
+                }
+
             };
         }
 
-        document.getElementById('weekscale').onchange = function() {
+        $('#weekscale').onchange = function() {
+            mks.configuration.showWeekScale = this.checked
             timeline.setOptions({showWeekScale: this.checked});
         }
 
-        document.getElementById('btn_restore').onclick = function() {
+        $('#btn_restore').onclick = function() {
             let groups = mks.groups
             
             groups.forEach(function(group) {
@@ -923,11 +985,19 @@
             }
         }
 
+        for(el of document.querySelectorAll("input[name='locale']")) {
+            el.onchange = function() {
+                timeline.setOptions({ locale: this.value });
+            };
+        }
+
         $("#stack").onchange = function () {
+            mks.configuration.stack = this.checked
             timeline.setOptions({stack: this.checked})
         }
 
         $("#stackSubgroups").onchange = function () {
+            mks.configuration.stackSubgroups = this.checked
             timeline.setOptions({stackSubgroups: this.checked})
         }
 

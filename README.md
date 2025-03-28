@@ -17,6 +17,9 @@ You can adjust the size of the drawer by holding the <kbd>CTRL</kbd> key and inc
 The button <kbd>Configuration</kbd> opens another drawer, on the right side, to configure the timeline display.
 ![Main interface configuration](/doc/main_interface_config.png)
 
+In this drawer, you can configure the zoom, the scale, the groups and the locales.
+The auto-close button allows to close the drawer automatically as soon as an option is selected.
+
 ### Plugins drawer
 The button <kbd>Plugins</kbd> opens a bottom drawer and contain a tab list where each tab is a plugin.
 See the plugins section to have more details on each plugin.
@@ -157,8 +160,9 @@ v0.1 first usable version\
 v0.2 add support for icons and colors\
 v0.3 add support for subgroups\
 v0.4 add json plugin\
-v0.5 add bootstrap icons provider
-v0.6 fixes and enhancements
-v0.7 add possibility to resize the content drawer
-v0.8 add possibility to set a color for an entire group
+v0.5 add bootstrap icons provider\
+v0.6 fixes and enhancements\
+v0.7 add possibility to resize the content drawer\
+v0.8 add possibility to set a color for an entire group\
+v0.9 enhance configuration drawer
 </details>
