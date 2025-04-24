@@ -164,5 +164,6 @@ v0.5 add bootstrap icons provider\
 v0.6 fixes and enhancements\
 v0.7 add possibility to resize the content drawer\
 v0.8 add possibility to set a color for an entire group\
-v0.9 enhance configuration drawer
+v0.9 enhance configuration drawer\
+v0.10 add folded group options in configuration
 </details>
