@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.14</title>
+    <title>Markvis-timeline v0.15</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,46 +35,19 @@
         #source {font-family: consolas, monospace;}
         #jsonPluginInput {font-family: consolas, monospace;}
 
-        .vis-item.vis-dot.blue { border-color: var(--bs-blue); color: var(--bs-blue);}
-        .vis-item.vis-dot.indigo { border-color: var(--bs-indigo); color: var(--bs-indigo);}
-        .vis-item.vis-dot.purple { border-color: var(--bs-purple); color: var(--bs-purple);}
-        .vis-item.vis-dot.pink { border-color: var(--bs-pink); color: var(--bs-pink);}
-        .vis-item.vis-dot.red { border-color: var(--bs-red); color: var(--bs-red);}
-        .vis-item.vis-dot.orange { border-color: var(--bs-orange); color: var(--bs-orange);}
-        .vis-item.vis-dot.yellow { border-color: var(--bs-yellow); color: var(--bs-yellow);}
-        .vis-item.vis-dot.green { border-color: var(--bs-green); color: var(--bs-green);}
-        .vis-item.vis-dot.teal { border-color: var(--bs-teal); color: var(--bs-teal);}
-        .vis-item.vis-dot.cyan { border-color: var(--bs-cyan); color: var(--bs-cyan);}
-        .vis-item.vis-dot.black { border-color: var(--bs-black); color: var(--bs-black);}
-        .vis-item.vis-dot.white { border-color: var(--bs-white); color: var(--bs-white);}
-        .vis-item.vis-dot.gray { border-color: var(--bs-gray); color: var(--bs-gray);}
-        
-        .vis-item.vis-range.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio))); border-color: var(--bs-blue); }
-        .vis-item.vis-range.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio))); border-color: var(--bs-indigo); }
-        .vis-item.vis-range.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio))); border-color: var(--bs-purple); }
-        .vis-item.vis-range.pink { background-color: hsl(from var(--bs-pink) h s calc(l + var(--color-ratio))); border-color: var(--bs-pink); }
-        .vis-item.vis-range.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio))); border-color: var(--bs-red); }
-        .vis-item.vis-range.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio))); border-color: var(--bs-orange); }
-        .vis-item.vis-range.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio))); border-color: var(--bs-yellow); }
-        .vis-item.vis-range.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio))); border-color: var(--bs-green); }
-        .vis-item.vis-range.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio))); border-color: var(--bs-teal); }
-        .vis-item.vis-range.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio))); border-color: var(--bs-cyan); }
-        .vis-item.vis-range.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio))); border-color: var(--bs-black); }
-        .vis-item.vis-range.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio))); border-color: var(--bs-white); }
-        .vis-item.vis-range.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio))); border-color: var(--bs-gray); }
-
-        .vis-item.vis-background.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-blue); border-width: 1px;}
-        .vis-item.vis-background.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-indigo); border-width: 1px;}
-        .vis-item.vis-background.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-purple); border-width: 1px;}
-        .vis-item.vis-background.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-red); border-width: 1px;}
-        .vis-item.vis-background.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-orange); border-width: 1px;}
-        .vis-item.vis-background.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-yellow); border-width: 1px;}
-        .vis-item.vis-background.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-green); border-width: 1px;}
-        .vis-item.vis-background.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-teal); border-width: 1px;}
-        .vis-item.vis-background.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-cyan); border-width: 1px;}
-        .vis-item.vis-background.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-black); border-width: 1px;}
-        .vis-item.vis-background.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-white); border-width: 1px;}
-        .vis-item.vis-background.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-gray); border-width: 1px;}
+        .bg-blue, .bg-blue:hover { background-color: var(--bs-blue); color: var(--bs-white);}
+        .bg-indigo, .bg-indigo:hover { background-color: var(--bs-indigo); color: var(--bs-white);}
+        .bg-purple, .bg-purple:hover { background-color: var(--bs-purple); color: var(--bs-white);}
+        .bg-pink, .bg-pink:hover { background-color: var(--bs-pink); color: var(--bs-white);}
+        .bg-red, .bg-red:hover { background-color: var(--bs-red); color: var(--bs-white);}
+        .bg-orange, .bg-orange:hover { background-color: var(--bs-orange); color: var(--bs-white);}
+        .bg-yellow, .bg-yellow:hover { background-color: var(--bs-yellow); color: var(--bs-black);}
+        .bg-green, .bg-green:hover { background-color: var(--bs-green); color: var(--bs-white);}
+        .bg-teal, .bg-teal:hover { background-color: var(--bs-teal); color: var(--bs-white);}
+        .bg-cyan, .bg-cyan:hover { background-color: var(--bs-cyan); color: var(--bs-black);}
+        .bg-black, .bg-black:hover { background-color: var(--bs-black); color: var(--bs-white);}
+        .bg-white, .bg-white:hover { background-color: var(--bs-white); color: var(--bs-black);}
+        .bg-gray, .bg-gray:hover { background-color: var(--bs-gray); color: var(--bs-black);}
         
         .vis-item.vis-range.primary { background-color: var(--bs-primary-bg-subtle); }
         .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
@@ -90,7 +63,56 @@
         
         /* alternating column backgrounds */
         .vis-time-axis .vis-grid.vis-odd { background: #f5f5f5; }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu>.dropdown-menu {
+            bottom: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+            -webkit-border-radius: 0 6px 6px 6px;
+            -moz-border-radius: 0 6px 6px;
+            border-radius: 0 6px 6px 6px;
+        }
+
+        .dropdown-submenu:hover>.dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-submenu>a:after {
+            display: block;
+            content: " ";
+            float: right;
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            border-width: 5px 0 5px 5px;
+            border-left-color: #ccc;
+            margin-top: 5px;
+            margin-right: -10px;
+        }
+
+        .dropdown-submenu:hover>a:after {
+            border-left-color: #fff;
+        }
+
+        .dropdown-submenu.pull-left {
+            float: none;
+        }
+
+        .dropdown-submenu.pull-left>.dropdown-menu {
+            left: -100%;
+            margin-left: 10px;
+            -webkit-border-radius: 6px 0 6px 6px;
+            -moz-border-radius: 6px 0 6px 6px;
+            border-radius: 6px 0 6px 6px;
+        }
     </style>
+    <style title="custom-vis-styles"></style>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm sticky-top bg-body-tertiary">
@@ -191,6 +213,88 @@
                         <li><a class="dropdown-item" href="https://icons.getbootstrap.com/" target="_blank">Bootstrap icons</a></li>
                     </ul>
                 </div>
+                <div class=" btn-group dropup-center dropup">
+                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Colors
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="d-flex">
+                            <div class="list-group list-group-flush text-nowrap">
+                                <button class="list-group-item list-group-item-action" disabled>Red colors</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: lightsalmon;">lightsalmon</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: salmon;">salmon</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: darksalmon;">darksalmon</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: lightcoral;">lightcoral</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: indianred;">indianred</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: crimson;">crimson</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: red;">red</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: firebrick;">firebrick</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: darkred;">darkred</button>
+                            </div>
+                            <div class="list-group list-group-flush text-nowrap">
+                                <button class="list-group-item list-group-item-action" disabled>Pink colors</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: pink;">pink</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: hotpink;">hotpink</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: darksalmon;">darksalmon</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: deeppink;">deeppink</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: palevioletred;">palevioletred</button>
+                                <button class="list-group-item list-group-item-action" style="background-color: mediumvioletred;">mediumvioletred</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            Red colors:
+                            <span class="badge" style="background-color: lightsalmon; color: contrast-color(lightsalmon);">x</span>
+                            <span class="badge" style="background-color: salmon; color: contrast-color(salmon);">x</span>
+                            <span class="badge" style="background-color: darksalmon; color: contrast-color(darksalmon);">x</span>
+                            <span class="badge" style="background-color: lightcoral; color: contrast-color(lightcoral);">x</span>
+                            <span class="badge" style="background-color: indianred; color: contrast-color(indianred);">x</span>
+                            <span class="badge" style="background-color: crimson; color: contrast-color(crimson);">x</span>
+                            <span class="badge" style="background-color: red; color: contrast-color(red);">x</span>
+                            <span class="badge" style="background-color: firebrick; color: contrast-color(firebrick);">x</span>
+                            <span class="badge" style="background-color: darkred; color: contrast-color(darkred);">x</span>
+                        <li class="dropdown-item">
+                            Pink colors
+                            <span class="badge" style="background-color: pink;">.</span>
+                            <span class="badge" style="background-color: lightpink;">.</span>
+                            <span class="badge" style="background-color: hotpink;">.</span>
+                            <span class="badge" style="background-color: deeppink;">.</span>
+                            <span class="badge" style="background-color: palevioletred;">.</span>
+                            <span class="badge" style="background-color: mediumvioletred;">.</span>
+                        </li>
+                        <li class="dropdown-item">Action three</li>
+                    </ul> -->
+                </div>
+                <!-- <div style="display: inline-block;">
+                    <select class="form-select" aria-label="color select">
+                        <option selected>Colors</option>
+                        <optgroup label="pink colors">
+                            <option style="background-color: pink;">pink</option>
+                            <option style="background-color: lightpink;">light pink</option>
+                            <option style="background-color: hotpink;">hot pink</option>
+                            <option style="background-color: deeppink;">deep pink</option>
+                            <option style="background-color: palevioletred;">pale violet red</option>
+                            <option style="background-color: mediumvioletred;">medium violet red</option>
+                        </optgroup>
+                        <optgroup label="red colors">
+                            <option style="background-color: lightsalmon;">light salmon</option>
+                            <option style="background-color: salmon;">salmon</option>
+                            <option style="background-color: darksalmon;">dark salmon</option>
+                            <option style="background-color: lightcoral; color: black;">light coral</option>
+                            <option style="background-color: indianred; color: white;">indian red</option>
+                            <option style="background-color: crimson; color: white;">crimson</option>
+                            <option style="background-color: red; color: white;">red</option>
+                            <option style="background-color: firebrick; color: white;">firebrick</option>
+                            <option style="background-color: darkred; color: white;">dark red</option>
+                        </optgroup>
+                        <optgroup label="Html Colors">
+                            <div>
+                                Red colors: <span style="background-color: red;">Red</span><span style="background-color: darkred;">darkred</span>
+                            </div>
+                        </optgroup>
+                    </select>
+                </div> -->
             </div>
             <!-- TODO: investigate further -->
             <!-- <div contenteditable="true">test</div> -->
@@ -387,7 +491,9 @@
                 CHAR_SEPARATOR_DATE: "/",
                 CHAR_SEPARATOR_COLOR: "|",
                 CHAR_COMMENT: '//',
-                CHAR_RAW_ITEM: '&'
+                CHAR_RAW_ITEM: '&',
+
+                PREFIX_CSS_COLOR_CLASS: "vis-color-"
             })
 
             constructor() {
@@ -530,6 +636,8 @@
                 this.currentSubgroupValue = 0
                 this.currentGroupColor = null
 
+                this.usedColors = new Set()
+
                 //this.timeline = new vis.Timeline()
             }
 
@@ -541,6 +649,8 @@
                 this.currentSubgroupId = null
                 this.currentSubgroupValue = 0
                 this.currentGroupColor = null
+                this.usedColors.clear()
+                this.clearStylesheet()
             }
 
             createItem(type = "point") {
@@ -556,29 +666,23 @@
             addItem(type, line, className = null) {
                 let item =  this.createItem(type)
 
-                let parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
-                
-                let color = parts[1] ? parts[1].trim() : this.currentGroupColor
-                
-                line = parts[0]
+                line = this.parseColor(line, item)
 
-                parts = line.split(';')
-                let content = parts[0].trim()
+                const parts = line.split(';')
+                item.content = parts[0].trim()
 
                 const [start, end] = this.extractDate(parts[1])
-                
-                item.content = content
                 
                 item.start = dt(start)
                 if (type == "range" || type == "background") { item.end = dt(end) }
 
                 // TODO: comparer si start > end => inverser
                 
-                if (color) { item.className = color }
-
                 if (className) { item.className += " "+className }
 
                 this.items.add(item)
+
+                console.log(this.usedColors)
             }
 
             addRecursiveItems(line) {
@@ -596,11 +700,13 @@
                 for (event of rest[0].split(',')) {
                     let it = this.createItem('background')
                     it.content = event
-                    if (color) { it.className = color }
+                    
+                    if (color) { it.className = Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS + color }
+                    
                     it.start = start.toISO()
                     it.end = end.toISO()
 
-                    it.style="border-left-style: solid;"
+                    it.style="border-left-style: solid; border-left-width: 1px;"
 
                     this.items.add(it)
 
@@ -608,6 +714,57 @@
                     end = end.plus(duration)
                 }
             }
+
+            parseColor(line, item) {
+                // parse color at the end of the line after a |
+                // color can be a HTML color name or a hex value (#RRGGBB)
+                const parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
+                
+                let color = parts[1] ? parts[1].trim() : this.currentGroupColor
+
+                if (color) {
+                    // check if color is a valid hex color
+                    const isHex = /^#([0-9A-F]{3}){1,2}$/i.test(color)
+
+                    if (isHex) {
+                        // future improvement
+                    }
+
+                    item.className = Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS + color
+                    this.usedColors.add(color)
+                }
+
+                return parts[0] // rest of the line
+            }
+
+            clearStylesheet() {
+                const stylesheet = document.styleSheets[document.styleSheets.length - 1]
+
+                if (stylesheet.title == "custom-vis-styles") {
+                    const rules = stylesheet.cssRules
+
+                    for (let i = rules.length - 1; i >= 0; i--) {
+                        stylesheet.deleteRule(i);
+                    }
+                }
+                else {console.warning("custom stylesheet not found at the last position of the document stylesheets array")}
+            }
+
+            createCssRulesForColors() {
+                const stylesheet = document.styleSheets[document.styleSheets.length - 1]
+
+                if (stylesheet.title == "custom-vis-styles") {
+                    this.usedColors.forEach(color => {
+                        // { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio))); border-color: var(--bs-blue); }
+                        stylesheet.insertRule(`.vis-dot.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {border-color: ${color}; color: ${color}}`)
+                        stylesheet.insertRule(`.vis-range.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: hsl(from ${color} h s calc(l + 10)); border-color: ${color};}`)
+                        stylesheet.insertRule(`.vis-background.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: rgb(from ${color} r g b / 30%); border-color: ${color};}`)
+                        // stylesheet.insertRule()
+                    });
+                }
+                else {console.warning("custom stylesheet not found at the last position of the document stylesheets array")}
+
+            } 
 
             extractDate(date_part) {
                 const parts = date_part ? date_part.split('/') : []
@@ -652,14 +809,14 @@
     <script type="text/javascript">
         //TODO:
         
-        // Content drawer //
+        // Content drawer
         // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
-        // + Add color helper
-        // + add possibility to write a HTML color name
         // + add new icon provider : material design icons + syntax to chose the provider ie. {provider-1-letter/icon}
         // + group closed by default (syntax ?)
         // + Add a syntax for comments on an item (tootip content)
         // + add a syntax to avoid a line to be re-ordered ?
+        // + Add a header section (syntax: ---) => to set some options (custom colors, css, etc.)
+        //   or some default config options ?
         
         // Timeline
         // + Tooptip for group button (only display this line) ?
@@ -668,13 +825,15 @@
         //     => have multiple options in the Scale menu
         //        - days forced + weeks above
         // + explore clustering feature (see exemples > others)
+        // + Visually indicate the number of items in a group (badge on the group button) ?
+        //    or a summary in the parent group ?
         
         // + Add a subgroup with none stacked items + syntax
         // + "Gantt" mode for a group (all lines are stacked in the defined order) + syntax
         
         // Range items
         // + selector/sign to display text outside the range
-        // + change the date syntax : maybe <start>:<end> => only one date field (refactoring needed)
+        // + change the date syntax : maybe <start>:<end> => only one date field (refactoring needed) or <start>/<end>
         
         // Icons items
         // unify the syntax for providers : only surrounded signs or not
@@ -819,6 +978,8 @@
             
             timeline.setGroups(mks.groups.dataset)
             timeline.setItems(mks.items)
+
+            mks.createCssRulesForColors()
 
             // Removed the update of the zoom here
             // mks.defaultZoom()

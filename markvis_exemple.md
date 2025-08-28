@@ -1,23 +1,23 @@
 # Category
  . point item; 2025W04
 ## Sub-category
- ] range item; 2025W03; 2025W05
+ ] range item; 2025W03/2025W05
 ### Subsub-category
- = Background item; 2025W03; 2025W06 |green
- ] range; 2025W04; 2025W05
- ] range; 2025W04; 2025W05 |blue
- ] range; 2025W04; 2025W05 |indigo
- ] range; 2025W04; 2025W05 |purple
- ] range; 2025W04; 2025W05 |pink
- ] range; 2025W04; 2025W05 |red
- ] range; 2025W04; 2025W05 |orange
- ] range; 2025W04; 2025W05 |yellow
- ] range; 2025W04; 2025W05 |green
- ] range; 2025W04; 2025W05 |teal
- ] range; 2025W04; 2025W05 |cyan
- ] range; 2025W04; 2025W05 |black
- ] range; 2025W04; 2025W05 |white
- ] range; 2025W04; 2025W05 |gray
+ = Background item; 2025W03/2025W06 |green
+ ] range; 2025W04/2025W05
+ ] range; 2025W04/2025W05 |blue
+ ] range; 2025W04/2025W05 |indigo
+ ] range; 2025W04/2025W05 |purple
+ ] range; 2025W04/2025W05 |pink
+ ] range; 2025W04/2025W05 |red
+ ] range; 2025W04/2025W05 |orange
+ ] range; 2025W04/2025W05 |yellow
+ ] range; 2025W04/2025W05 |green
+ ] range; 2025W04/2025W05 |teal
+ ] range; 2025W04/2025W05 |cyan
+ ] range; 2025W04/2025W05 |black
+ ] range; 2025W04/2025W05 |white
+ ] range; 2025W04/2025W05 |gray
 
  . point; 2025W05-3
  . point; 2025W05-3 |blue
@@ -51,7 +51,7 @@
 
 #Colors tests<br>(whole category in red) |red
 . item point; 2025W05
-] range; 2025W05;2025W06
+] range; 2025W05/2025W06
 . item color override; 2025W06 |green
-]range override; 2025W05;2025W07 |blue
+]range override; 2025W05/2025W07 |blue
 *star icon override; 2025W06 |yellow
