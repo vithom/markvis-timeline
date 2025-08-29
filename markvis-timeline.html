@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.11</title>
+    <title>Markvis-timeline v0.12</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -319,45 +319,92 @@
         <div class="offcanvas-body d-flex flex-column">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-plugin-json" type="button" aria-controls="tab-plugin-json" aria-selected="true">Json to items</button>
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-plugin-json" type="button" aria-controls="tab-plugin-json" aria-selected="true">
+                        Json to items <a href="https://github.com/vithom/markvis-timeline?tab=readme-ov-file#json-plugin" target="_blank"><i class="bi bi-question-circle"></i></a>
+                    </button>
+                    
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-plugin-api" type="button" aria-controls="tab-plugin-api" aria-selected="true">
+                        API call to items <a href="https://github.com/vithom/markvis-timeline?tab=readme-ov-file#api-plugin" target="_blank"><i class="bi bi-question-circle"></i></a>
+                    </button>
                 </li>
             </ul>
 
             <div class="tab-content p-2 border border-top-0 flex-grow-1">
-                <div class="tab-pane active" id="tab-plugin-json">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <div class="mb-2">
-                                <div class="form-text">Group where to add the items</div>
-                                <input type="text" id="inputGroup" class="form-control">
-                            </div>
-                            <div class="mb-2">
-                                <div class="form-text">Json key for items' title</div>
-                                <input type="text" id="inputContent" class="form-control">
-                            </div>
-                            <div class="mb-2">
-                                <div class="form-text">Json key for items' date</div>
-                                <input type="text" id="inputDate" class="form-control">
-                            </div>
-                            <div>
-                                <div class="form-text">Optional regexps to evaluate on the date field (<a href="https://regex101.com/" target="_blank">help</a>)</div>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="inputRegexpDate" placeholder="Date/time regexp">
-                                    <span class="input-group-text">T</span>
-                                    <input type="text" class="form-control" id="inputRegexpTime" placeholder="Time specific regexp" aria-label="time specific regexp">
+                <div class="tab-pane h-100 active" id="tab-plugin-json">
+                    <div class="container-fluid h-100">
+                        <div class="row h-100">
+                            <div class="col d-flex flex-column gap-3">
+                                <div class="mb-2">
+                                    <div class="form-text">Group where to add the items</div>
+                                    <input type="text" id="inputGroup" class="form-control">
+                                
+                                    <div class="form-text">Json key for items' title</div>
+                                    <input type="text" id="inputContent" class="form-control">
+                                
+                                    <div class="form-text">Json key for items' date</div>
+                                    <input type="text" id="inputDate" class="form-control">
+                                
+                                    <div class="form-text">Optional regexps to evaluate on the date field (<a href="https://regex101.com/" target="_blank">help</a>)</div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="inputRegexpDate" placeholder="Date/time regexp">
+                                        <span class="input-group-text">T</span>
+                                        <input type="text" class="form-control" id="inputRegexpTime" placeholder="Time specific regexp" aria-label="time specific regexp">
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <button type="submit" class="btn btn-primary" id="buttonJsonPlugin">Submit</button>
+                                    <div class="form-text ms-3" id="pluginJsonResult">The json must be an array of objects with at least the keys for the content and the date</div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col d-flex flex-column">
-                            <textarea class="form-control flex-grow-1" id="jsonPluginInput" aria-label="With textarea" placeholder="paste json content here..."></textarea>
-                            <div class="invalid-feedback">Please paste valid json content</div>
+                            <div class="col d-flex flex-column">
+                                <textarea class="form-control flex-grow-1" id="jsonPluginInput" aria-label="With textarea" placeholder="paste json content here..."></textarea>
+                                <div class="invalid-feedback">Please paste valid json content</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="d-flex align-items-baseline">
-                        <button type="submit" class="btn btn-primary" id="buttonJsonPlugin">Submit</button>
-                        <div class="form-text ms-3" id="pluginJsonResult">The json must be an array of objects with at least the keys for the content and the date</div>
+                </div>
+
+                <div class="tab-pane h-100" id="tab-plugin-api">
+                    <div class="container-fluid h-100">
+                        <div class="row h-100">
+                            <div class="col d-flex flex-column gap-3">
+                                <div>
+                                    <div class="form-text">Group where to add the items</div>
+                                    <input type="text" id="plugin-api-group-input" class="form-control">
+                                    <div class="form-text">Json key for items' title</div>
+                                    <input type="text" id="plugin-api-inputTitle" class="form-control">
+                                    <div class="form-text">Json key for items' date</div>
+                                    <input type="text" id="plugin-api-inputDate" class="form-control">
+                                </div>
+                                <div class="d-flex" style="gap: 20px;">
+                                    <div class="form-text">Item config</div>
+                                    <div class="btn-group" role="group" aria-label="Item type">
+                                        <input type="radio" class="btn-check" name="plugin-api-item-type" id="plugin-api-item-type-point" value="point" autocomplete="off" checked>
+                                        <label class="btn btn-outline-primary btn-sm" for="plugin-api-item-type-point">Point</label>
+
+                                        <input type="radio" class="btn-check" name="plugin-api-item-type" id="plugin-api-item-type-box" value="box" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="plugin-api-item-type-box">Box</label>
+
+                                        <input type="radio" class="btn-check" name="plugin-api-item-type" id="plugin-api-item-type-range" value="range" autocomplete="off" disabled>
+                                        <label class="btn btn-outline-primary btn-sm" for="plugin-api-item-type-range">Range</label>
+
+                                        <input type="radio" class="btn-check" name="plugin-api-item-type" id="plugin-api-item-type-background" value="background" autocomplete="off" disabled>
+                                        <label class="btn btn-outline-primary btn-sm" for="plugin-api-item-type-background">Background</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-primary" id="plugin-api-submit">Submit</button>
+                                </div>
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <div class="form-text">API endpoint (GET request)</div>
+                                <input type="text" id="plugin-api-endpoint" class="form-control">
+                                <div class="form-text">Logs</div>
+                                <textarea class="form-control flex-grow-1" id="plugin-api-output" style="height: 300px;" aria-label="With textarea" wrap="off" readonly></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -595,6 +642,9 @@
     </script>
 
     <script type="text/javascript">
+        // For this branch
+        //  + Add a new tab in the plugins drawer
+        
         //TODO:
         //
         // + to check if we can dissociate the locale and the week starting day 
@@ -1115,8 +1165,6 @@
             mks.groups.unfoldAll()
         }
 
-        
-
         //
         // End of configuration drawer callbacks
         //
@@ -1129,6 +1177,16 @@
             // console.log(props);
         });
 
+        function checkEmptyField(field) {
+            if (!$(field).value.trim()) {
+                $(field).classList.add("is-invalid")
+                return true
+            } else {
+                $(field).classList.remove("is-invalid")
+                return false
+            }
+        }
+
         $("#buttonJsonPlugin").onclick = function() {
             const group = $("#inputGroup").value.trim()
             const keyContent = $("#inputContent").value.trim()
@@ -1136,6 +1194,7 @@
             const regexpDate = $("#inputRegexpDate").value  //no trim as we may want a space at the begining/end of the regexp
             const regexpTime = $("#inputRegexpTime").value  //no trim as we may want a space at the begining/end of the regexp
             const jsonContent = $("#jsonPluginInput").value
+            
             let isError = false
 
             const jsonOutput = (text => {
@@ -1143,19 +1202,10 @@
                 $("#jsonPluginInput~div").innerText = text
             })
             
-            const checkEmptyField = ((value, field) => {
-                if (!value) {
-                    $(field).classList.add("is-invalid")
-                    isError = true
-                } else {
-                    $(field).classList.remove("is-invalid")
-                }
-            })
-
-            checkEmptyField(group, "#inputGroup")
-            checkEmptyField(keyContent, "#inputContent")
-            checkEmptyField(keyDate, "#inputDate")
-            checkEmptyField(jsonContent, "#jsonPluginInput")
+            isError |= checkEmptyField("#inputGroup")
+            isError |= checkEmptyField("#inputContent")
+            isError |= checkEmptyField("#inputDate")
+            isError |= checkEmptyField("#jsonPluginInput")
 
             if (isError) { return }
 
@@ -1196,6 +1246,44 @@
                 if (content) { mks.items.add({group: group, content: content, start: dt(date)}) }
             })
         }
+
+        $("#plugin-api-submit").onclick = function() {
+            const url = $("#plugin-api-endpoint").value.trim()
+
+            let isError = false
+            
+            isError |= checkEmptyField("#plugin-api-endpoint")
+            isError |= checkEmptyField("#plugin-api-group-input")
+            isError |= checkEmptyField("#plugin-api-inputTitle")
+            isError |= checkEmptyField("#plugin-api-inputDate")
+
+            if (isError) { return }
+            
+            $("#plugin-api-submit").innerHTML = 'Submit<span class="spinner-border spinner-border-sm ms-2" aria-hidden="true"></span>'
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(json => insert_items_from_json(json))
+                .catch(error => $("#plugin-api-output").value = "Error: " + error.message)
+                .finally(() => $("#plugin-api-submit").innerHTML = 'Submit')
+        }
+
+        function insert_items_from_json(json) {
+            const group = $("#plugin-api-group-input").value.trim()
+            const content_key = $("#plugin-api-inputTitle").value.trim()
+            const date_key = $("#plugin-api-inputDate").value.trim()
+            const item_type = $("input[name='plugin-api-item-type']:checked").value
+            
+            json.forEach(item => {
+                const content = item[content_key]
+                const date = item[date_key]
+
+                $("#plugin-api-output").value += `inserting... ${content} at ${date}\n`
+
+                mks.items.add({group: group, content: content, start: dt(date), type: item_type})
+            })
+        }
+            
 
         window.addEventListener("keydown", (event) => {
             const drawer = $("#drawer")

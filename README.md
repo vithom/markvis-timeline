@@ -132,7 +132,8 @@ Avoid mixing items in subgroup and not in subgroup within a group as it leads to
 
 ### Json plugin
 
-The json plugin allows to create items in batch from a json content.
+The json plugin allows to create items in batch from a json content.\
+The json shall be an array of object with keys for item's title and date.
 
 ![json plugin image](/doc/plugin_json.png)
 
@@ -151,6 +152,21 @@ Note that if you fill both of field, a "T" character is inserted between the dat
 
 A link to the website regex101 is also available to test the regular expressions.
 
+### API plugin
+
+The json plugin allows to fetch items from an api endpoint.
+
+Currently the plugin is supporting only GET requests.\
+The API shall returns an json array of objects containing a key for the item's title and another for the date.
+
+![api plugin interface](/doc/plugin_api.png)
+
+You need to fill the different fields in order to have the items generated:
+ * The id of the group where to generate the items. See the groups part of the documentation to see how to specify an id for a group.
+ * The key in the json content which contains the title of the items
+ * The key in the json date which contains the date of the items
+ * The API endpoint that return the json.
+
 ## Version history
 
 <details>
@@ -166,4 +182,6 @@ v0.7 add possibility to resize the content drawer\
 v0.8 add possibility to set a color for an entire group\
 v0.9 enhance configuration drawer\
 v0.10 add folded group options in configuration
+v0.11 add dev mode (editable items)
+v0.12 add API plugin
 </details>
