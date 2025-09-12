@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.10</title>
+    <title>Markvis-timeline v0.11</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -99,9 +99,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div class="navbar-nav me-auto">
-                    <button class="btn btn-outline-secondary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer">Edit timeline</button>
-                    <button class="btn btn-outline-success me-1" type="button" id="btn-export">Export</button>
+                <div class="navbar-nav me-auto align-items-center gap-2">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer">Edit timeline</button>
+                    <button class="btn btn-outline-success" type="button" id="btn-export">Export</button>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="switch-dev-mode">
+                        <label class="form-check-label" for="switch-dev-mode">Dev mode (editable on)</label>
+                    </div>
                 </div>
                 <div class="navbar-nav">
                     <button class="btn btn-outline-secondary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerPlugins">Plugins</button>
@@ -379,6 +383,7 @@
                 CHAR_ICON_BOOTSTRAP: "{}",
                 CHAR_SEPARATOR_COLOR: "|",
                 CHAR_COMMENT: '//',
+                CHAR_RAW_ITEM: '&'
             })
 
             constructor() {
@@ -639,7 +644,7 @@
 
         const $ = (sel) => document.querySelector(sel) // jQuery emulation
 
-        function analyze(line) {
+        function analyze(line) { //TODO : a mettre dans la classe Markvis
             // TODO: use regexp ?
             const re = new RegExp(/\#{1}\s*(.+);\s*(.+)/g)
 
@@ -745,6 +750,13 @@
                 events = parts[0].split(',')
                 console.log('repeat_rc:', mks.items, events, parts[1], parts[2])
                 repeat_rc(mks.items, events, parts[1].trim(), parseInt(parts[2]))
+            }
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_RAW_ITEM)) {
+                item = JSON.parse(line.substr(1))
+                
+                if(!item.hasOwnProperty("group")) { item['group'] = mks.currentGroupId }
+                
+                mks.items.add(item)
             }
             else {
                 //TODO: afficher les erreurs
@@ -871,6 +883,14 @@
             const [start, end] = [it.selectionStart, it.selectionEnd]
             console.log(start, end)
             it.setRangeText(text, start, end)
+        }
+
+        $("#switch-dev-mode").onchange = function() {
+            if (this.checked) {
+                timeline.setOptions({editable: true})
+            } else {
+                timeline.setOptions({editable: false})
+            }
         }
 
 
