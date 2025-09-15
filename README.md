@@ -7,18 +7,26 @@ The application is a single web-page, with all the code included in it.
 It looks like this by default
 ![Main interface empty](/doc/main_interface_empty.png)
 
+At the top bar, you can find buttons for different functions.
+- Edit timeline button opens the left drawer to edit the timeline items
+- Export button for exporting the content of the timeline in a mardown file
+- Zoom and Scale buttons for the respectives settings
+- Plugins button opens the bottom drawer with the plugins tabs
+- Configuration button opens the right drawer with the configuration options
+
 ### Edition drawer
 The button <kbd>Edit timeline</kbd> opens a drawer, on the left side, with a textarea to write the markdown that describes the elements to render on the timeline.
 ![Main interface edit timeline](/doc/main_interface_edit.png)
 
-You can adjust the size of the drawer by holding the <kbd>CTRL</kbd> key and increase/decrase the width with the right or left arrows keys.
+You can adjust the size of the drawer by holding the <kbd>ALT</kbd> key and increase/decrase the width with the right or left arrows keys.
 
 ### Configuration drawer
 The button <kbd>Configuration</kbd> opens another drawer, on the right side, to configure the timeline display.
 ![Main interface configuration](/doc/main_interface_config.png)
 
-In this drawer, you can configure the zoom, the scale, the groups and the locales.
-The auto-close button allows to close the drawer automatically as soon as an option is selected.
+In this drawer, you can configure the groups stacking, groups default folding and the locales.
+
+You also have the possibility to activate the dev mode.
 
 ### Plugins drawer
 The button <kbd>Plugins</kbd> opens a bottom drawer and contain a tab list where each tab is a plugin.
@@ -171,7 +179,7 @@ You need to fill the different fields in order to have the items generated:
 
 <details>
 <summary>History</summary>
- 
+
 v0.1 first usable version\
 v0.2 add support for icons and colors\
 v0.3 add support for subgroups\
@@ -181,7 +189,9 @@ v0.6 fixes and enhancements\
 v0.7 add possibility to resize the content drawer\
 v0.8 add possibility to set a color for an entire group\
 v0.9 enhance configuration drawer\
-v0.10 add folded group options in configuration
-v0.11 add dev mode (editable items)
-v0.12 add API plugin
+v0.10 add folded group options in configuration\
+v0.11 add dev mode (editable items)\
+v0.12 add API plugin\
+v0.13 move zoom and scale settings to top bar
+
 </details>
