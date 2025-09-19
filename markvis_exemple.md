@@ -48,3 +48,10 @@
  *star milestone; 2025W05-5 |black
  *star milestone; 2025W05-5 |white
  *star milestone; 2025W05-5 |gray
+
+#Colors tests<br>(whole category in red) |red
+. item point; 2025W05
+] range; 2025W05;2025W06
+. item color override; 2025W06 |green
+]range override; 2025W05;2025W07 |blue
+*star icon override; 2025W06 |yellow

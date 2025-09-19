@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.13</title>
+    <title>Markvis-timeline v0.14</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,18 +63,18 @@
         .vis-item.vis-range.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio))); border-color: var(--bs-white); }
         .vis-item.vis-range.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio))); border-color: var(--bs-gray); }
 
-        .vis-item.vis-background.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
-        .vis-item.vis-background.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); }
+        .vis-item.vis-background.blue { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-blue); border-width: 1px;}
+        .vis-item.vis-background.indigo { background-color: hsl(from var(--bs-indigo) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-indigo); border-width: 1px;}
+        .vis-item.vis-background.purple { background-color: hsl(from var(--bs-purple) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-purple); border-width: 1px;}
+        .vis-item.vis-background.red { background-color: hsl(from var(--bs-red) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-red); border-width: 1px;}
+        .vis-item.vis-background.orange { background-color: hsl(from var(--bs-orange) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-orange); border-width: 1px;}
+        .vis-item.vis-background.yellow { background-color: hsl(from var(--bs-yellow) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-yellow); border-width: 1px;}
+        .vis-item.vis-background.green { background-color: hsl(from var(--bs-green) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-green); border-width: 1px;}
+        .vis-item.vis-background.teal { background-color: hsl(from var(--bs-teal) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-teal); border-width: 1px;}
+        .vis-item.vis-background.cyan { background-color: hsl(from var(--bs-cyan) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-cyan); border-width: 1px;}
+        .vis-item.vis-background.black { background-color: hsl(from var(--bs-black) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-black); border-width: 1px;}
+        .vis-item.vis-background.white { background-color: hsl(from var(--bs-white) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-white); border-width: 1px;}
+        .vis-item.vis-background.gray { background-color: hsl(from var(--bs-gray) h s calc(l + var(--color-ratio)) / var(--alpha-ratio)); border-color: var(--bs-gray); border-width: 1px;}
         
         .vis-item.vis-range.primary { background-color: var(--bs-primary-bg-subtle); }
         .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
@@ -244,8 +244,8 @@
                 <div class="card-body">
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="radio" name="locale" class="form-check-input" value="en" checked />
-                            English (default)
+                            <input type="radio" name="locale" class="form-check-input" value="en_GB" checked />
+                            English (GB, Monday 1st day of the week)
                         </label>
                     </div>
                     
@@ -253,6 +253,13 @@
                         <label class="form-check-label">
                             <input type="radio" name="locale" class="form-check-input" value="fr" />
                             French
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" name="locale" class="form-check-input" value="en_US" />
+                            English (US, Sunday 1st day of the week)
                         </label>
                     </div>
                 </div>
@@ -377,6 +384,7 @@
                 CHAR_EVENT_RECURSIVE: '¤',
                 CHAR_ICON_GOOGLE: "*",
                 CHAR_ICON_BOOTSTRAP: "{}",
+                CHAR_SEPARATOR_DATE: "/",
                 CHAR_SEPARATOR_COLOR: "|",
                 CHAR_COMMENT: '//',
                 CHAR_RAW_ITEM: '&'
@@ -458,7 +466,7 @@
                     //timeAxis: { scale: 'week' },
                     zoomKey: "ctrlKey",
                     verticalScroll: true,
-                    locale: 'en',
+                    locale: 'en_GB',
                     showWeekScale: true,
                     orientation: 'top',
                     zoomMin: 1000*60*60*24*7, // 1 week in ms
@@ -535,10 +543,18 @@
                 this.currentGroupColor = null
             }
 
-            
+            createItem(type = "point") {
+                let item = {}
+                
+                item.type = type
+                if (this.currentGroupId) { item.group = this.currentGroupId }
+                if (this.currentSubgroupId) { item.subgroup = this.currentSubgroupId }
 
-            addItem(type, line) {
-                let item =  {}
+                return item
+            }
+
+            addItem(type, line, className = null) {
+                let item =  this.createItem(type)
 
                 let parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
                 
@@ -548,39 +564,83 @@
 
                 parts = line.split(';')
                 let content = parts[0].trim()
-                let start = parts[1] ? parts[1].trim() : null
-                let end = parts[2] ? parts[2].trim() : null
+
+                const [start, end] = this.extractDate(parts[1])
                 
-                switch (type) {
-                    case "point":
-                        item.type = "point"
-                        break;
-                    
-                    case "box":
-                        item.type = "box"
-                        break;
-                    
-                    case "range":
-                        item.type = "range"
-                        item.end = dt(end)
-                        break;
-                    
-                    case "background":
-                        item.type = "background"
-                        item.end = dt(end)
-                        break;
-                        
-                    default:
-                        break;
-                }
-                 
                 item.content = content
-                item.start = dt(start)
-                if (this.currentGroupId) { item.group = this.currentGroupId }
-                if (color) { item.className = color }
-                if (this.currentSubgroupId) { item.subgroup = this.currentSubgroupId }
                 
+                item.start = dt(start)
+                if (type == "range" || type == "background") { item.end = dt(end) }
+
+                // TODO: comparer si start > end => inverser
+                
+                if (color) { item.className = color }
+
+                if (className) { item.className += " "+className }
+
                 this.items.add(item)
+            }
+
+            addRecursiveItems(line) {
+                const parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
+                
+                let color = parts[1] ? parts[1].trim() : this.currentGroupColor
+                
+                let rest = parts[0].split(";")
+                const duration = this.extractDuration(rest[2])
+
+                let [start, end] = this.extractDate(rest[1])
+                start = luxon.DateTime.fromISO(start)
+                end = start.plus(duration)
+
+                for (event of rest[0].split(',')) {
+                    let it = this.createItem('background')
+                    it.content = event
+                    if (color) { it.className = color }
+                    it.start = start.toISO()
+                    it.end = end.toISO()
+
+                    it.style="border-left-style: solid;"
+
+                    this.items.add(it)
+
+                    start = start.plus(duration)
+                    end = end.plus(duration)
+                }
+            }
+
+            extractDate(date_part) {
+                const parts = date_part ? date_part.split('/') : []
+
+                const start = parts[0] ? parts[0].trim() : null
+                let end = parts[1] ? parts[1].trim() : null
+
+                if (end && end[0] == '+') {
+                    const dur = this.extractDuration(end.substr(1))
+                    end = luxon.DateTime.fromISO(dt(start)).plus(dur).toISO()
+                }
+
+                return [start, end]
+            }
+
+            extractDuration(duration) {
+                const matches = [...duration.matchAll(/(\d+)([hdwMy])/g)]
+                
+                let obj = (matches.length > 0) ? {} : {"days": 1}
+                
+                for (const m of matches) {
+                    let key = "days"
+                    let n = m[1]
+
+                    if (m[2]) {
+                        const map = new Map([["h", "hours"],["d","days"],["w","weeks"],["M","months"],["y", "years"]])
+                        key = map.get(m[2])
+                    }
+
+                    obj[key] = n
+                }
+
+                return obj
             }
 
             defaultZoom() {
@@ -591,8 +651,6 @@
 
     <script type="text/javascript">
         //TODO:
-        //
-        // + to check if we can dissociate the locale and the week starting day 
         
         // Content drawer //
         // + maybe change the textarea to a contenteditable div like codemirror/ace/monaco
@@ -602,7 +660,6 @@
         // + group closed by default (syntax ?)
         // + Add a syntax for comments on an item (tootip content)
         // + add a syntax to avoid a line to be re-ordered ?
-        // + Add relative date (+1d, +1w, +1m, +1y)
         
         // Timeline
         // + Tooptip for group button (only display this line) ?
@@ -610,6 +667,7 @@
         // + To have a custom function (format in the options) to manage display of timeline scale
         //     => have multiple options in the Scale menu
         //        - days forced + weeks above
+        // + explore clustering feature (see exemples > others)
         
         // + Add a subgroup with none stacked items + syntax
         // + "Gantt" mode for a group (all lines are stacked in the defined order) + syntax
@@ -681,27 +739,20 @@
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_GOOGLE))
             {
-                const re = new RegExp(/\*(\w+)? ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
+
+                // const re = new RegExp(/\*(\w+)? ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
+                const re = new RegExp(/\*(\w+)? (.+)/)
                 const matches = re.exec(line)
+
+                console.log(matches)
                 
                 if (matches) {
                     const icon = matches[1]
-                    const title = matches[2]
-                    const date = matches[4]
-                    const color = matches[6]
+                    const line = matches[2]
 
-                    let currentGroupId = mks.currentGroupId
-                    let it = createItem(point, currentGroupId, [title,date])
-                    
-                    if (icon) {
-                        it.className = 'vis-icon icon-md-'+icon
-                    }
+                    const className = icon ? 'vis-icon icon-md-'+icon : icon
 
-                    if (color) {
-                        it.className += ' ' + color
-                    }
-                    
-                    mks.items.add(it)
+                    mks.addItem("point", line, className)
                 }
                 else {
                     console.warn("no regexp match for", line)
@@ -710,27 +761,19 @@
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[0]))
             {
-                const re = new RegExp(/{([\w-]+)} ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
+                const re = new RegExp(/{([\w-]+)} (.+)/)
                 const matches = re.exec(line)
 
                 if (matches) {
                     const icon = matches[1]
-                    const title = matches[2]
-                    const date = matches[4]
-                    const color = matches[6]
+                    const line = matches[2]
 
-                    let currentGroupId = mks.currentGroupId
-                    let it = createItem(point, currentGroupId, [title, date])
+                    const className = icon ? 'vis-icon icon-bs-'+icon : icon
 
-                    if (icon) {
-                        it.className = 'vis-icon icon-bs-'+icon
-                    }
-
-                    if (color) {
-                        it.className += ' ' + color
-                    }
-                    
-                    mks.items.add(it)
+                    mks.addItem("point", line, className)
+                }
+                else {
+                    console.warn("no regexp match for", line)
                 }
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_BOX))
@@ -746,10 +789,8 @@
                 mks.addItem("range", line.substr(1).trim())
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_RECURSIVE)) {
-                parts = line.substr(1).trim().split(';')
-                events = parts[0].split(',')
-                console.log('repeat_rc:', mks.items, events, parts[1], parts[2])
-                repeat_rc(mks.items, events, parts[1].trim(), parseInt(parts[2]))
+                
+                mks.addRecursiveItems(line.substr(1).trim())
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_RAW_ITEM)) {
                 item = JSON.parse(line.substr(1))
@@ -765,25 +806,10 @@
             }
         }
 
-        function createItem(fct, currentGroupId, parts) {
-            return fct(currentGroupId, parts[0], parts[1])
-        }
-
-        function createRangeItem(parts, currentGroupId) {
-            return range(currentGroupId, parts[0], parts[1].trim(), parts[2].trim())
-        }
-
-        function createBackgroundItem(parts, currentGroupId) {
-            return background(currentGroupId, parts[0], parts[1].trim(), parts[2].trim())
-        }
-
         document.getElementById('btn-update').onclick = function() {
             mks.clear()
 
             md_content = document.getElementById('source').value
-
-            //let currentGroupId = null
-
 
             for (line of md_content.trim().split("\n")) {
                 if (line.length > 0) {
@@ -917,56 +943,44 @@
 
         // ***  functions for the dataset ***
 
-        function point(group, content, start) {
-            return {
-                group: group,
-                content: content,
-                start: dt(start)
-            }
-        }
+        // function point(group, content, start) {
+        //     return {
+        //         group: group,
+        //         content: content,
+        //         start: dt(start)
+        //     }
+        // }
 
-        function box(group, content, start) {
-            return {
-                group: group,
-                content: content,
-                start: dt(start),
-                type: 'box'
-            }
-        }
+        // function box(group, content, start) {
+        //     return {
+        //         group: group,
+        //         content: content,
+        //         start: dt(start),
+        //         type: 'box'
+        //     }
+        // }
 
-        function range(group, content, start, end) {
-            return {
-                group: group,
-                content: content,
-                start: dt(start),
-                end: dt(end),
-                type: 'range'
-            };
-        }
+        // function range(group, content, start, end) {
+        //     return {
+        //         group: group,
+        //         content: content,
+        //         start: dt(start),
+        //         end: dt(end),
+        //         type: 'range'
+        //     };
+        // }
 
-        function background(group, content, start, end) {
-            return {
-                group: group,
-                content: content,
-                start: dt(start),
-                end: dt(end),
-                type: 'background'
-            };
-        }
+        // function background(group, content, start, end) {
+        //     return {
+        //         group: group,
+        //         content: content,
+        //         start: dt(start),
+        //         end: dt(end),
+        //         type: 'background'
+        //     };
+        // }
 
         // *** functions for items display ***
-
-        function repeat_rc(items, rc_list_name, start_date, duration_weeks) {
-            let start = luxon.DateTime.fromISO(start_date);
-            let end = start.plus({weeks: duration_weeks}).minus({days: 1})
-
-            for (rc of rc_list_name) {
-                //console.log(rc, start, end)
-                items.add(background('rc', rc, start.toISO(), end.toISO()))
-                start = start.plus({weeks: duration_weeks})
-                end = end.plus({weeks: duration_weeks})
-            }
-        }
 
         // No used by this version
         //
@@ -1091,29 +1105,9 @@
         }
 
         $("#opt-timeline-foldAllGroups").onclick = function () {
-            // const g = mks.groups.dataset
-
-            // g.forEach(function(group) {
-            //     if (group.nestedGroups) {
-            //         g.update({id: group.id, showNested: false});
-            //     }
-            //     // if (group.treeLevel > 0) {
-            //     //     this.update({id: group.id, visible: false});
-            //     // }
-            // })
-            // timeline.setGroups(mks.groups.dataset)
-
             mks.groups.foldAll()
         }
         $("#opt-timeline-unfoldAllGroups").onclick = function () {
-            // const g = mks.groups.dataset
-
-            // g.forEach(function(group) {
-            //     if (group.nestedGroups) {
-            //         g.update({id: group.id, showNested: true});
-            //     }
-            // })
-            // timeline.setGroups(mks.groups.dataset)
             mks.groups.unfoldAll()
         }
 

@@ -33,7 +33,7 @@ The button <kbd>Plugins</kbd> opens a bottom drawer and contain a tab list where
 See the plugins section to have more details on each plugin.
 
 ## Syntax
-Here are the details for the markdown syntax.
+The Markvis Timeline markdown syntax lets you describe groups, subgroups, and events in a timeline using a simple, readable format.
 Be careful that the syntax is still a work in progress and can be changed at anytime.
 
 ### Groups
@@ -95,12 +95,14 @@ The icon name is written below the icon on the website.
 Range and background type items are created like the following
 ```
 // range item
- ] item title ; <start date> ; <end date> [| color]
+ ] item title ; <start date> / <end date> [| color]
+ ] item title ; <start date> /+<duration> [| color]
 ```
 
 ```
 // background item
- = item title ; <start date> ; <end date> [| color]
+ = item title ; <start date> / <end date> [| color]
+ = item title ; <start date> / +<duration> [|color]
 ```
 
 ### Date format
@@ -118,6 +120,36 @@ Use the link above to see all the available forms of syntax, but in short, you c
 2025-01-01T08:30
 2025W01-2T08:30
 ```
+
+#### Duration format
+For range and background items, you can specify a duration instead of an explicit end date.
+The duration must start with a + and can use the [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).
+
+##### Exemples
+```
+] Task ; 2025-09-22 / +3d      // 3 days
+] Sprint ; 2025-09-22 / +2w    // 2 weeks
+= Vacation ; 2025-09-22 / +1M  // 1 month
+```
+
+##### Supported units:
+
+<!-- - `m` = minutes // not yet supported -->
+- `h` = hours
+- `d` = days
+- `w` = weeks
+- `M` = months
+- `y` = years
+
+You can also combine units, for example: +1w3d means 1 week and 3 days.
+
+##### Full syntax:
+
+```
+<start date> / +<duration>
+```
+
+Where `<duration>` is a combination of numbers and units, always starting with +.
 
 ### subgroups
 
