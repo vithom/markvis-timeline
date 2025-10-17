@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Markvis-timeline v0.15</title>
+    <title>Markvis-timeline v0.16</title>
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,11 +20,10 @@
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.min.css">
 
-    <!-- Google fonts -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <!-- Google Symbols font -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1" rel="stylesheet">
 
     <style type="text/css">
         :root {
@@ -34,6 +33,8 @@
 
         #source {font-family: consolas, monospace;}
         #jsonPluginInput {font-family: consolas, monospace;}
+
+        #drawer {overflow: auto; resize: horizontal;}
 
         .bg-blue, .bg-blue:hover { background-color: var(--bs-blue); color: var(--bs-white);}
         .bg-indigo, .bg-indigo:hover { background-color: var(--bs-indigo); color: var(--bs-white);}
@@ -53,9 +54,6 @@
         .vis-item.vis-range.secondary { background-color: var(--bs-secondary-bg-subtle); }
         .vis-item.vis-range.success { background-color: var(--bs-success-bg-subtle); border-color: var(--bs-success); }
 
-        .vis-dot[class*=icon-md] { border: none; background: transparent; top: 5px !important; transform: translateX(-12px) !important;}
-        .vis-dot[class*=icon-bs] { border: none; background: transparent; top: 5px !important; transform: translateX(-8px) !important;}
-        
         .vis-item.even {background-color: #d5f6f366;}
         .vis-item.odd {background-color: #e3f6d566;}
         .vis-item.off {background-color: #0000; background-image: repeating-linear-gradient(-45deg,#ffffff00 0 20px,#ff000015 0 40px)}
@@ -123,8 +121,8 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
                 <div class="navbar-nav gap-2">
-                    <button class="btn btn-outline-secondary d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer"><span class="material-icons">edit_calendar</span> Edit timeline</button>
-                    <button class="btn btn-outline-success d-flex gap-1" type="button" id="btn-export"><span class="material-icons">download</span>Export</button>
+                    <button class="btn btn-outline-secondary d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawer"><span class="material-symbols-outlined">edit_calendar</span> Edit timeline</button>
+                    <button class="btn btn-outline-success d-flex gap-1" type="button" id="btn-export"><span class="material-symbols-outlined">download</span>Export</button>
                 </div>
                 <div class="navbar-nav gap-2">
                     <div class="dropdown">
@@ -154,8 +152,8 @@
                     </div>
                 </div>
                 <div class="navbar-nav">
-                    <button class="btn btn-outline-secondary me-1 d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerPlugins"><span class="material-icons">extension</span>Plugins</button>
-                    <button class="btn btn-outline-primary me-1 d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerConfig"><span class="material-icons">settings</span>Configuration</button>
+                    <button class="btn btn-outline-secondary me-1 d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerPlugins"><span class="material-symbols-outlined">extension</span>Plugins</button>
+                    <button class="btn btn-outline-primary me-1 d-flex gap-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#drawerConfig"><span class="material-symbols-outlined">settings</span>Configuration</button>
                 </div>
             </div>
         </div>
@@ -197,8 +195,8 @@
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Items</button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#" id="el-config-item-point">. point item</a></li>
-                        <li><a class="dropdown-item" href="#" id="el-config-item-icon">*icon item with icon (google material icons)</a></li>
-                        <li><a class="dropdown-item" href="#" id="el-config-item-icon2">{icon} item with icon (Bootstrap icons)</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-icon">*m:<icon_name> item with icon (Google symbols)</a></li>
+                        <li><a class="dropdown-item" href="#" id="el-config-item-icon2">*b:<icon_name> item with icon (Bootstrap icons)</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-box">! box item</a></li>
                         <li><a class="dropdown-item" href="#" id="el-config-item-range">] range item</a></li>
@@ -487,14 +485,41 @@
                 CHAR_EVENT_BACKGROUND: '=',
                 CHAR_EVENT_RECURSIVE: '¤',
                 CHAR_ICON_GOOGLE: "*",
+                CHAR_ICONS: "*",
                 CHAR_ICON_BOOTSTRAP: "{}",
                 CHAR_SEPARATOR_DATE: "/",
                 CHAR_SEPARATOR_COLOR: "|",
                 CHAR_COMMENT: '//',
                 CHAR_RAW_ITEM: '&',
 
-                PREFIX_CSS_COLOR_CLASS: "vis-color-"
+                PREFIX_CSS_COLOR_CLASS: "vis-color-",
+
+                PREFIX_MATERIAL_SYMBOLS: "ms",
+                PREFIX_BOOTSTRAP_ICONS: "bi"
             })
+
+            static msCodepoints = {}
+            
+            static biIconsMapping = null
+
+            static initMsMapping() {        
+                fetch("https://raw.githubusercontent.com/google/material-design-icons/refs/heads/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.codepoints")
+                    .then(response => response.text())
+                    .then(data => {
+                            data.split("\n").map(row => {
+                                const r = row.split(" ")
+                                Markvis.msCodepoints[r[0]] = r[1]
+                            })
+                    })
+                    .catch(error => console.warn("Impossible to get material icons mapping source file", error))
+            }
+
+            static initBiMapping() {
+                fetch("https://raw.githubusercontent.com/twbs/icons/refs/heads/main/font/bootstrap-icons.json")
+                        .then(response => response.json())
+                        .then(data => Markvis.biIconsMapping = data)
+                        .catch(error => console.warn("Impossible to get bootstrap icons mapping source file", error))
+            }
 
             constructor() {
                 // this.groups = new vis.DataSet()
@@ -581,6 +606,7 @@
                     //editable: true,
                     groupEditable: true,
                     xss: {disabled: true},
+                    // xss:{filterOptions: {allowList:{ i: ["class"], span: ["class"] }}},
 
                     groupOrder: function(a,b) {
                         return a.value - b.value;
@@ -638,7 +664,14 @@
 
                 this.usedColors = new Set()
 
+                this.usedIcons = {}
+                this.usedIcons[Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS] = new Set()
+                this.usedIcons[Markvis.SYNTAX.PREFIX_BOOTSTRAP_ICONS] = new Set()
+
                 //this.timeline = new vis.Timeline()
+
+                Markvis.initBiMapping()
+                Markvis.initMsMapping()
             }
 
             clear() {
@@ -650,6 +683,9 @@
                 this.currentSubgroupValue = 0
                 this.currentGroupColor = null
                 this.usedColors.clear()
+                this.usedIcons[Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS].clear()
+                this.usedIcons[Markvis.SYNTAX.PREFIX_BOOTSTRAP_ICONS].clear()
+                
                 this.clearStylesheet()
             }
 
@@ -663,13 +699,14 @@
                 return item
             }
 
-            addItem(type, line, className = null) {
+            addItem(type, line, classNames = []) {
                 let item =  this.createItem(type)
 
-                line = this.parseColor(line, item)
+                line = this.parseColor(line, item, classNames)
 
                 const parts = line.split(';')
-                item.content = parts[0].trim()
+
+                item.content = this.parseContent(parts[0].trim())
 
                 const [start, end] = this.extractDate(parts[1])
                 
@@ -678,11 +715,9 @@
 
                 // TODO: comparer si start > end => inverser
                 
-                if (className) { item.className += " "+className }
+                if (classNames.length > 0) { item.className = classNames.join(" ") } //BUG !! add undefined when no color
 
                 this.items.add(item)
-
-                console.log(this.usedColors)
             }
 
             addRecursiveItems(line) {
@@ -715,7 +750,26 @@
                 }
             }
 
-            parseColor(line, item) {
+            parseContent(content) {
+                const matches = content.matchAll(/\[i:(?:(\w+):)?([a-z-_]+)(:\d{2})?\]/g)
+
+                let pattern = '<span class="material-symbols-outlined">$2</span>'
+
+                for (const match of matches) {
+                    const [, provider, icon, size] = match;
+                    
+                    const replacement = provider === 'b'
+                        ? size  ? `<i class="bi bi-${icon}" style="font-size${size}px;"></i>`
+                                : `<i class="bi bi-${icon}"></i>`
+                        : size  ? `<span class="material-symbols-outlined" style="vertical-align:text-bottom; font-size${size}px;">${icon}</span>`
+                                : `<span class="material-symbols-outlined" style="vertical-align:text-bottom;">${icon}</span>`
+                    content = content.replace(match[0], replacement);
+                }
+
+                return content
+            }
+
+            parseColor(line, item, classNames) {
                 // parse color at the end of the line after a |
                 // color can be a HTML color name or a hex value (#RRGGBB)
                 const parts = line.split(Markvis.SYNTAX.CHAR_SEPARATOR_COLOR)
@@ -730,41 +784,76 @@
                         // future improvement
                     }
 
-                    item.className = Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS + color
+                    // item.className = Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS + color
+
+                    classNames.push(Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS + color)
+                    
                     this.usedColors.add(color)
                 }
 
                 return parts[0] // rest of the line
             }
 
-            clearStylesheet() {
-                const stylesheet = document.styleSheets[document.styleSheets.length - 1]
-
-                if (stylesheet.title == "custom-vis-styles") {
-                    const rules = stylesheet.cssRules
-
-                    for (let i = rules.length - 1; i >= 0; i--) {
-                        stylesheet.deleteRule(i);
-                    }
+            //TODO: make static ?
+            getCustomStylesheet() {
+                for (const s of document.styleSheets) {
+                    if (s.title == "custom-vis-styles") { return s }
                 }
-                else {console.warning("custom stylesheet not found at the last position of the document stylesheets array")}
+                
+                console.warning("custom stylesheet not found in the document stylesheets array")
             }
 
-            createCssRulesForColors() {
-                const stylesheet = document.styleSheets[document.styleSheets.length - 1]
+            clearStylesheet() {
+                const stylesheet = this.getCustomStylesheet()
 
-                if (stylesheet.title == "custom-vis-styles") {
-                    this.usedColors.forEach(color => {
-                        // { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio))); border-color: var(--bs-blue); }
-                        stylesheet.insertRule(`.vis-dot.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {border-color: ${color}; color: ${color}}`)
-                        stylesheet.insertRule(`.vis-range.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: hsl(from ${color} h s calc(l + 10)); border-color: ${color};}`)
-                        stylesheet.insertRule(`.vis-background.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: rgb(from ${color} r g b / 30%); border-color: ${color};}`)
-                        // stylesheet.insertRule()
-                    });
+                const rules = stylesheet.cssRules
+                
+                for (let i = rules.length - 1; i >= 0; i--) {
+                    stylesheet.deleteRule(i);
                 }
-                else {console.warning("custom stylesheet not found at the last position of the document stylesheets array")}
+            }
 
-            } 
+            //TODO: improve one day by specifying only the rule for existing item, and not the three at a time
+            // => change Set() by {dot: Set(), range: Set(), background: Set()}
+            // and assign the right colors in the right existing items
+            createCssRulesForColors() {
+                const stylesheet = this.getCustomStylesheet()
+
+                this.usedColors.forEach(color => {
+                    // { background-color: hsl(from var(--bs-blue) h s calc(l + var(--color-ratio))); border-color: var(--bs-blue); }
+                    stylesheet.insertRule(`.vis-dot.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {border-color: ${color}; color: ${color}}`)
+                    stylesheet.insertRule(`.vis-range.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: hsl(from ${color} h s calc(l + 10)); border-color: ${color};}`)
+                    stylesheet.insertRule(`.vis-background.${Markvis.SYNTAX.PREFIX_CSS_COLOR_CLASS}${color} {background-color: rgb(from ${color} r g b / 30%); border-color: ${color};}`)
+                })
+            }
+
+            createCssRulesForIcons() {
+                const stylesheet = this.getCustomStylesheet()
+
+                this.usedIcons[Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS].forEach(icon => {
+                    if (icon in Markvis.msCodepoints)
+                    {
+                        const codepoint = Markvis.msCodepoints[icon]
+                        const selector = `.vis-dot.vis-icon-${Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS}-${icon}`
+
+                        stylesheet.insertRule(`${selector}:before {content: '\\${codepoint}'; font-family: 'Material Symbols Outlined'; font-size: 24px; line-height:normal;}`)
+                        stylesheet.insertRule(`${selector} {border: none; background: transparent;}`)
+                    }
+                    else { console.warn(`'${icon}' not found in the Material symbols library`) }
+                })
+
+                this.usedIcons[Markvis.SYNTAX.PREFIX_BOOTSTRAP_ICONS].forEach(icon => {
+                    if (icon in Markvis.biIconsMapping)
+                    {
+                        const codepoint = Markvis.biIconsMapping[icon].toString(16)
+                        const selector = `.vis-dot.vis-icon-${Markvis.SYNTAX.PREFIX_BOOTSTRAP_ICONS}-${icon}`
+
+                        stylesheet.insertRule(`${selector}:before {content: "\\${codepoint}"; font-family: bootstrap-icons}`)
+                        stylesheet.insertRule(`${selector} { border: none; background: transparent; }`)
+                    }
+                    else { console.warn(`'${icon}' not found in the Bootstrap icon library`) }
+                })
+            }
 
             extractDate(date_part) {
                 const parts = date_part ? date_part.split('/') : []
@@ -817,6 +906,7 @@
         // + add a syntax to avoid a line to be re-ordered ?
         // + Add a header section (syntax: ---) => to set some options (custom colors, css, etc.)
         //   or some default config options ?
+        // improve the drag and drop resize (handle on all the right edge, instead of just at the bottom)
         
         // Timeline
         // + Tooptip for group button (only display this line) ?
@@ -833,10 +923,11 @@
         
         // Range items
         // + selector/sign to display text outside the range
-        // + change the date syntax : maybe <start>:<end> => only one date field (refactoring needed) or <start>/<end>
-        
-        // Icons items
-        // unify the syntax for providers : only surrounded signs or not
+
+        // Icons
+        // [ ] another source of icons ?
+        //      [ ] Font awesome
+        // [ ] Fine grained css rules for item types (see TODO in the Markvis class)
         
         // Plugins
         // + Add a plugin to link with github gist
@@ -849,13 +940,7 @@
         
         // + Internal refactoring for the Markvis class
         //   ++ integrate the timeline in the class
-        //   ++ integrate the helpers functions in the class
-
-        //BUGS:
-        // - icons not always displayed the first time
-        // - space between icon and text too big the first time
-        // => use a template ?
-        // => or with a callback event when the item appears or timeline move (see exemples)
+        //   ++ integrate the helpers functions in the class as static members
 
         // [ ] to add a toast at the bottom of the screen for the notice/warnings/error after analyzing the markdown text
 
@@ -898,43 +983,34 @@
             {
                 mks.addItem("point", line.substr(1).trim())
             }
-            else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_GOOGLE))
+            else if (line.startsWith(Markvis.SYNTAX.CHAR_ICONS))
             {
-
-                // const re = new RegExp(/\*(\w+)? ([^;|]+)(;\s*([^|]+)\s*)?(\|\s*(\w+))?/)
-                const re = new RegExp(/\*(\w+)? (.+)/)
-                const matches = re.exec(line)
-
-                console.log(matches)
-                
-                if (matches) {
-                    const icon = matches[1]
-                    const line = matches[2]
-
-                    const className = icon ? 'vis-icon icon-md-'+icon : icon
-
-                    mks.addItem("point", line, className)
-                }
-                else {
-                    console.warn("no regexp match for", line)
-                }
-
-            }
-            else if (line.startsWith(Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[0]))
-            {
-                const re = new RegExp(/{([\w-]+)} (.+)/)
-                const matches = re.exec(line)
+                const matches = new RegExp(/\*(?:(\w+):)?([\w-]+) (.*)/).exec(line)
 
                 if (matches) {
-                    const icon = matches[1]
-                    const line = matches[2]
+                    const prefix = matches[1]
+                    const icon = matches[2]
+                    const rest = matches[3]
 
-                    const className = icon ? 'vis-icon icon-bs-'+icon : icon
+                    const provider = ((p) => {
+                        switch (p) {
+                            case "m":
+                                return Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS
+                            case "b":
+                                return Markvis.SYNTAX.PREFIX_BOOTSTRAP_ICONS
+                            default:
+                                return Markvis.SYNTAX.PREFIX_MATERIAL_SYMBOLS // default provider
+                        }
+                    })(prefix)
+                    
+                    const className = [`vis-icon-${provider}-${icon}`]
 
-                    mks.addItem("point", line, className)
+                    mks.usedIcons[provider].add(icon)
+
+                    mks.addItem("point", rest, className)
                 }
                 else {
-                    console.warn("no regexp match for", line)
+                    console.warn("No regexp match for icon:", line)
                 }
             }
             else if (line.startsWith(Markvis.SYNTAX.CHAR_EVENT_BOX))
@@ -983,29 +1059,10 @@
 
             mks.createCssRulesForColors()
 
+            mks.createCssRulesForIcons()
+
             // Removed the update of the zoom here
             // mks.defaultZoom()
-
-            // Update for icon here
-            // DOM manipulation only available after timeline.setItems()
-            const nodes = document.querySelectorAll(".vis-dot.vis-icon")
-            nodes.forEach((it) => {
-                let icon = "star"
-                
-                it.classList.forEach((name) => {
-                    
-                    if (name.startsWith('icon-bs-')) // Bootstrap icons
-                    {
-                        icon = name.split("icon-bs-")[1]
-                        it.innerHTML ='<i class="bi bi-'+icon+'"></i>'
-                    }
-                    else if (name.startsWith("icon-md-")) // Google Material icons
-                    {
-                        icon = name.split("icon-md-")[1]
-                it.innerHTML ='<span class="material-icons">'+icon+'</span>'
-                    }
-                })
-            })
         }
         
         $('#btn-import').onclick = function() {
@@ -1060,8 +1117,8 @@
         $("#el-config-group2").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP +" title\n")
         $("#el-config-group3").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP + Markvis.SYNTAX.CHAR_GROUP +" title\n")
         $("#el-config-item-point").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_POINT + " title ; date\n")
-        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICON_GOOGLE + "star title ; date\n")
-        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[0] + "star" + Markvis.SYNTAX.CHAR_ICON_BOOTSTRAP[1] + " title ; date\n")
+        $("#el-config-item-icon").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICONS + "m:star title ; date\n")
+        $("#el-config-item-icon2").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_ICONS + "b:star title ; date\n")
         $("#el-config-item-box").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_BOX + " title ; date\n")
         $("#el-config-item-range").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_RANGE + " title ; date_Start ; date_End\n")
         $("#el-config-item-background").onclick = ()=> insertAtCursorPosition(Markvis.SYNTAX.CHAR_EVENT_BACKGROUND + " title ; date_Start ; date_End\n")
@@ -1103,45 +1160,6 @@
             }
             return it
         };
-
-        // ***  functions for the dataset ***
-
-        // function point(group, content, start) {
-        //     return {
-        //         group: group,
-        //         content: content,
-        //         start: dt(start)
-        //     }
-        // }
-
-        // function box(group, content, start) {
-        //     return {
-        //         group: group,
-        //         content: content,
-        //         start: dt(start),
-        //         type: 'box'
-        //     }
-        // }
-
-        // function range(group, content, start, end) {
-        //     return {
-        //         group: group,
-        //         content: content,
-        //         start: dt(start),
-        //         end: dt(end),
-        //         type: 'range'
-        //     };
-        // }
-
-        // function background(group, content, start, end) {
-        //     return {
-        //         group: group,
-        //         content: content,
-        //         start: dt(start),
-        //         end: dt(end),
-        //         type: 'background'
-        //     };
-        // }
 
         // *** functions for items display ***
 

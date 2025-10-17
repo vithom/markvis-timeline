@@ -1,53 +1,56 @@
 # markvis
 
-This project comes from the inspiration of [markwhen](https://markwhen.com/) but with the [visjs-timeline](https://visjs.org/) library as a base for rendering the timeline.
+This project is inspired by [markwhen](https://markwhen.com/) but uses the [visjs-timeline](https://visjs.org/) library as the base for rendering timelines.
 
 ## User Interface
-The application is a single web-page, with all the code included in it.
-It looks like this by default
+The application is a single web page, with all the code included. By default, it looks like this:
 ![Main interface empty](/doc/main_interface_empty.png)
 
-At the top bar, you can find buttons for different functions.
-- Edit timeline button opens the left drawer to edit the timeline items
-- Export button for exporting the content of the timeline in a mardown file
-- Zoom and Scale buttons for the respectives settings
-- Plugins button opens the bottom drawer with the plugins tabs
-- Configuration button opens the right drawer with the configuration options
+At the top bar, you can find buttons for different functions:
+- The **Edit timeline** button opens the left drawer to edit the timeline items.
+- The **Export** button allows exporting the timeline content to a markdown file.
+- The **Zoom** and **Scale** buttons adjust the zoom level and scale settings, respectively.
+- The **Plugins** button opens the bottom drawer with plugin tabs.
+- The **Configuration** button opens the right drawer with configuration options.
 
-### Edition drawer
-The button <kbd>Edit timeline</kbd> opens a drawer, on the left side, with a textarea to write the markdown that describes the elements to render on the timeline.
+### Edit Timeline Drawer
+The <kbd>Edit timeline</kbd> button opens a drawer on the left side with a text area for writing the markdown that describes the timeline elements.
 ![Main interface edit timeline](/doc/main_interface_edit.png)
 
-You can adjust the size of the drawer by holding the <kbd>ALT</kbd> key and increase/decrase the width with the right or left arrows keys.
+You can adjust the drawer's size by holding the <kbd>ALT</kbd> key and using the left or right arrow keys.
+You can also resize the drawer by dragging the handle at its bottom-right corner.
 
-### Configuration drawer
-The button <kbd>Configuration</kbd> opens another drawer, on the right side, to configure the timeline display.
+### Configuration Drawer
+The <kbd>Configuration</kbd> button opens a drawer on the right side for configuring the timeline display.
 ![Main interface configuration](/doc/main_interface_config.png)
 
-In this drawer, you can configure the groups stacking, groups default folding and the locales.
+In this drawer, you can configure:
+- Group stacking.
+- Default group folding.
+- Localization settings.
 
-You also have the possibility to activate the dev mode.
+You can also enable developer mode.
 
-### Plugins drawer
-The button <kbd>Plugins</kbd> opens a bottom drawer and contain a tab list where each tab is a plugin.
-See the plugins section to have more details on each plugin.
+### Plugins Drawer
+The <kbd>Plugins</kbd> button opens a bottom drawer containing a list of tabs, each corresponding to a plugin. See the **Plugins** section for more details.
 
 ## Syntax
-The Markvis Timeline markdown syntax lets you describe groups, subgroups, and events in a timeline using a simple, readable format.
-Be careful that the syntax is still a work in progress and can be changed at anytime.
+The Markvis Timeline markdown syntax allows you to describe groups, subgroups, and events in a timeline using a simple, readable format.
+Note that the syntax is still under development and may change in the future.
 
 ### Groups
-A new group, is represented by a new separated line in the timeline. The syntax to create a new group is the following
+A new group is represented by a new line in the timeline. The syntax for creating a group is as follows:
 
 ```
 # group title [|<color>]
-// you can add a group with a specific id you provide
-# group title ; group_id_you_choose [|<color>]
+// You can add a group with a specific ID
+# group title ; group_id [|<color>]
 ```
 
-You can provide a `<color>` name at the end of the line for a group so that all items in this group will get this color.
+You can specify a `<color>` at the end of the line to apply it to all items in the group.
 
-Groups can be nested with several `#` characters
+Groups can be nested using multiple `#` characters:
+Currently three levels are supported
 
 ```
 ## group title (2nd level)
@@ -57,56 +60,49 @@ Groups can be nested with several `#` characters
 
 ### Items
 
-Point and box type items are created like the following
+Point and box-type items are created as follows:
 ```
-// point item
+// Point item
  . item title ; <date> [| color]
 
-// box item
+// Box item
  ! item title ; <date> [| color]
 ```
 
 #### Icons
-Items can also be customize with an icon, with the two following syntax
+Point items can be customized with an icon using one of the following syntaxes:
 ```
- [icon] item title ; <date> [|color]
- {icon} item title; <date> [|color]
-```
-
-There are two different icons providers: Google material icons and Bootstrap icons.\
-The _icon_ term can be found on each of the icons provider, when you click on a icon.
-
-##### Google Material icons
-For google material icons, use the brackets form `[icon]` with one of the name available [here](https://fonts.google.com/icons?icon.set=Material+Icons)
-
-The icon name is written in the drawer, after clicking on the desired icon
-(image)
-
-##### Bootstrap icons
-For Bootstrap icons, use the curly braces form with one of the name available [here](https://icons.getbootstrap.com/)
-
-The icon name is written below the icon on the website.
-
-```
-// box item
- ! item title ; <date> [| color]
+*<provider>:<icon_name> item title ; <date> [|color]
 ```
 
-Range and background type items are created like the following
+The following icon providers are supported:
+ * Google Material Icons, with the provider prefix 'm'
+ * Bootstrap Icons, with the provider prefix 'b'
+ Note that you can omit the provider prefix, the default provider is Google then.
+ That can be changed in the markdown file metadata (feature to come)
+
+##### Google Material Icons
+For Google Symboles, use one of the names available [here](https://fonts.google.com/icons?icon.set=Material+Icons).
+
+##### Bootstrap Icons
+For Bootstrap icons,  use one of the names available [here](https://icons.getbootstrap.com/).
+
+### Range and Background Items
+Range and background items are created as follows:
 ```
-// range item
+// Range item
  ] item title ; <start date> / <end date> [| color]
  ] item title ; <start date> /+<duration> [| color]
 ```
 
 ```
-// background item
+// Background item
  = item title ; <start date> / <end date> [| color]
  = item title ; <start date> / +<duration> [|color]
 ```
 
-### Date format
-The date format used follows the [Luxon.js](https://moment.github.io/luxon/#/parsing) library and use the  ISO 8601 format.
+### Date Format
+The date format follows the [Luxon.js](https://moment.github.io/luxon/#/parsing) library and uses ISO 8601 format.
 
 Use the link above to see all the available forms of syntax, but in short, you can use the two following forms:
 ```
@@ -151,9 +147,8 @@ You can also combine units, for example: +1w3d means 1 week and 3 days.
 
 Where `<duration>` is a combination of numbers and units, always starting with +.
 
-### subgroups
-
-Within a group, items can be grouped together with a _subgroup_.\
+### Subgroups
+Items within a group can be organized into subgroups using parentheses:
 Subgroups syntax use the rounded brackets like in the following example
 ```
 # group
@@ -166,13 +161,13 @@ Subgroups syntax use the rounded brackets like in the following example
   . item in group 2 ; <date>
  )
 ```
-Avoid mixing items in subgroup and not in subgroup within a group as it leads to display bugs.
+Be careful to avoid mixing items in subgroup and not in subgroup within a group as it leads to display bugs.
 
-## plugins
+## Plugins
 
 ### Json plugin
 
-The json plugin allows to create items in batch from a json content.\
+The JSON plugin allows batch creation of items from JSON content.\
 The json shall be an array of object with keys for item's title and date.
 
 ![json plugin image](/doc/plugin_json.png)
@@ -192,11 +187,11 @@ Note that if you fill both of field, a "T" character is inserted between the dat
 
 A link to the website regex101 is also available to test the regular expressions.
 
-### API plugin
+### API Plugin
+The API plugin fetches items from an API endpoint.
 
-The json plugin allows to fetch items from an api endpoint.
+Currently, only GET requests are supported.
 
-Currently the plugin is supporting only GET requests.\
 The API shall returns an json array of objects containing a key for the item's title and another for the date.
 
 ![api plugin interface](/doc/plugin_api.png)
@@ -207,23 +202,25 @@ You need to fill the different fields in order to have the items generated:
  * The key in the json date which contains the date of the items
  * The API endpoint that return the json.
 
-## Version history
+## Version History
 
 <details>
 <summary>History</summary>
 
-v0.1 first usable version\
-v0.2 add support for icons and colors\
-v0.3 add support for subgroups\
-v0.4 add json plugin\
-v0.5 add bootstrap icons provider\
-v0.6 fixes and enhancements\
-v0.7 add possibility to resize the content drawer\
-v0.8 add possibility to set a color for an entire group\
-v0.9 enhance configuration drawer\
-v0.10 add folded group options in configuration\
-v0.11 add dev mode (editable items)\
-v0.12 add API plugin\
-v0.13 move zoom and scale settings to top bar
+v0.1 First usable version\
+v0.2 Added support for icons and colors\
+v0.3 Added support for subgroups\
+v0.4 Added JSON plugin\
+v0.5 Added Bootstrap Icons provider\
+v0.6 Fixes and enhancements\
+v0.7 Added the ability to resize the content drawer\
+v0.8 Added the ability to set a color for an entire group\
+v0.9 Enhanced the configuration drawer\
+v0.10 Added folded group options in configuration\
+v0.11 Added developer mode (editable items)\
+v0.12 Added API plugin\
+v0.13 Moved zoom and scale settings to the top bar\
+v0.14 Added dynamic color management and custom CSS rules for icons\
+v0.15 Improved icons management and fixed bugs
 
 </details>
